@@ -92,7 +92,7 @@ export default function Component() {
                   </p>
                 </div>
                 <button
-                  className="bg-green-500 text-white hover:bg-green-600 flex items-center gap-2 w-fit rounded-full animate-pulse"
+                  className="bg-green-500 text-white hover:bg-green-600 flex items-center gap-2 w-fit px-6 py-3 rounded-full animate-pulse"
                   onClick={openWhatsApp}
                 >
                   <MessageCircle className="h-5 w-5" />
