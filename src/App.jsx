@@ -23,12 +23,12 @@ export default function Component() {
         </nav>
       </header>
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-purple-600 via-purple-500 to-pink-500">
+        <section className="w-full py-12 md:py-24 lg:py-24 bg-gradient-to-b from-purple-600 via-purple-500 to-pink-500">
           <div className="container px-4 md:px-6 mx-auto">
-            <div className="flex flex-col items-center space-y-4 text-center">
+            <div className="flex flex-col items-center space-y-10 text-center">
               <div className="space-y-2">
-                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-yellow-300 drop-shadow-lg mb-8">
-                  ¡Transforma tus Selfies con Magia! 🧙‍♂️✨
+                <h1 className="tracking-widest text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-yellow-300 drop-shadow-lg mb-8">
+                  Transforma tus Selfies con Magia
                 </h1>
                 <img
                   className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last sm:max-w-[200px] lg:max-w-[750px]"
@@ -40,7 +40,7 @@ export default function Component() {
 
               </div>
               <a
-                className="bg-green-500 text-white hover:bg-green-600 flex items-center gap-2 text-lg px-6 py-3 rounded-full animate-bounce mt-10"
+                className="bg-green-500 text-white hover:bg-green-600 flex items-center gap-2 text-lg px-6 py-3 rounded-full animate-bounce"
                 href="https://wa.me/5219983027241"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -48,9 +48,9 @@ export default function Component() {
                 <MessageCircle className="h-6 w-6" />
                 ¡Échale, Compa! 😆
               </a>
-              <p className="mx-auto max-w-[700px] text-yellow-100 md:text-xl">
-                Imagica.lol convierte tus selfies comunes en aventuras bien locas. ¡Sé un cantante de regional mexicano 🎤, monta un
-                alebrije 🐉, o aparece en La Rosa de Guadalupe 📺 - todo por WhatsApp! 🤣
+              <p className="mt-5 mx-auto max-w-[700px] text-yellow-100 md:text-xl">
+                Imagica.lol convierte tus selfies comunes en aventuras. ¡Sé un cantante de regional mexicano 🎤, monta un
+                alebrije 🐉, aparece en La Rosa de Guadalupe, actua en tu pelicula favorita, conviertete en gangster, caballero medieval, magnate o miles de personajes mas. 📺 - todo por WhatsApp.
               </p>
             </div>
           </div>
@@ -58,23 +58,23 @@ export default function Component() {
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-pink-500 via-orange-400 to-yellow-400">
           <div className="container px-4 md:px-6 mx-auto">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-purple-800 text-center mb-8">
-              Cómo Jala 😎
+              Cómo funciona
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="flex flex-col items-center text-center">
                 <MessageCircle className="h-12 w-12 text-purple-800 mb-4" />
                 <h3 className="text-xl font-bold text-purple-900">1. Mándanos un Whats 💬</h3>
-                <p className="text-purple-950">Inicia una plática con Imagica.lol en WhatsApp.</p>
+                <p className="text-purple-950">Inicia una conversacion con Imagica en whatsapp aqui y paga tu sesion de 10 fotos de $399 pesos.</p>
               </div>
               <div className="flex flex-col items-center text-center">
                 <Camera className="h-12 w-12 text-purple-800 mb-4" />
                 <h3 className="text-xl font-bold text-purple-900">2. Paga y manda 10 Fotos 📸</h3>
-                <p className="text-purple-950">tuyas con diferentes angulos y fondos.</p>
+                <p className="text-purple-950">Mandanos 10 fotos tuyas de buena calidad dode se vea claramente tu cara de distintos angulos. Puedes usar 🕶️ y 🧢 en algunas.</p>
               </div>
               <div className="flex flex-col items-center text-center">
                 <Wand2 className="h-12 w-12 text-purple-800 mb-4" />
                 <h3 className="text-xl font-bold text-purple-900">3. Recibe la Magia 🎩✨</h3>
-                <p className="text-purple-950">Escoje 10 ideas y generaremos tus fotos en un dos por tres! ¡Te vas a morir de risa!</p>
+                <p className="text-purple-950">Mientras entrenamos nuestro model con tus fotos. Selecciona 10 ideas nuestras o nuevas de fotos que quieres y las generaremos para ti.</p>
               </div>
             </div>
           </div>
@@ -92,7 +92,7 @@ export default function Component() {
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
                   <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-purple-900">
-                    Tus Fotos, Reimaginadas 🖼️🤯
+                    Ideas de Fotos 💡📸
                   </h2>
                   <p className="max-w-[600px] text-purple-950 md:text-xl">
                     Con Imagica.lol, no solo tomas fotos - ¡creas nuevas realidades! ¡Conviértete en un luchador profesional 🤼‍♂️, un
@@ -117,10 +117,10 @@ export default function Component() {
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-yellow-300">
-                  ¿Listo para Echarte unas Risas con Nuevas Fotos? 🤣📸
+                  ¿Listo para divertirte con nuevas fotos? 🤣💁‍♀️🕺
                 </h2>
                 <p className="mx-auto max-w-[600px] text-yellow-100 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  ¡Únete a miles de personas felices y comienza tu aventura con Imagica.lol hoy! Advertencia: ¡Te vas a morir de risa! 😂
+                  ¡Únete a miles de personas felices que usan Imagica todos los dias!
                 </p>
               </div>
               <a
