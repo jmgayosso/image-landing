@@ -1,5 +1,6 @@
 import { Camera, Wand2, MessageCircle } from "lucide-react"
 import Examples from './assets/examples.png'
+import Carousel from "./components/carousel"
 
 export default function Component() {
 
@@ -8,9 +9,9 @@ export default function Component() {
       <header className="px-4 lg:px-6 h-14 flex items-center bg-gradient-to-r from-orange-400 to-pink-400">
         <a className="flex items-center justify-center" href="#">
           <Camera className="h-6 w-6 text-yellow-200" />
-          <span className="ml-2 text-2xl font-bold text-yellow-200">Imagica.lol 🇲🇽</span>
+          <span className="ml-2 text-2xl font-bold text-yellow-200">Imagica.lol</span>
         </a>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
+        {/* <nav className="ml-auto flex gap-4 sm:gap-6">
           <a className="text-sm font-medium hover:underline underline-offset-4 text-yellow-200" href="#">
             Chido 👌
           </a>
@@ -20,14 +21,15 @@ export default function Component() {
           <a className="text-sm font-medium hover:underline underline-offset-4 text-yellow-200" href="#">
             Quiénes Somos 🤠
           </a>
-        </nav>
+        </nav> */}
       </header>
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-24 bg-gradient-to-b from-purple-600 via-purple-500 to-pink-500">
+        <section className="w-full py-12 md:py-20 lg:py-20 bg-gradient-to-b from-purple-600 via-purple-500 to-pink-500">
           <div className="container px-4 md:px-6 mx-auto">
+      {/* <Carousel /> */}
             <div className="flex flex-col items-center space-y-10 text-center">
               <div className="space-y-2">
-                <h1 className="tracking-widest text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-yellow-300 drop-shadow-lg mb-8">
+                <h1 className="tracking-normal text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-yellow-300 drop-shadow-lg mb-8">
                   Transforma tus Selfies con Magia
                 </h1>
                 <img
@@ -40,22 +42,21 @@ export default function Component() {
 
               </div>
               <a
-                className="bg-green-500 text-white hover:bg-green-600 flex items-center gap-2 text-lg px-6 py-3 rounded-full animate-bounce"
+                className="bg-green-500 text-white hover:bg-green-600 flex items-center gap-2 text-xl px-6 py-3 rounded-full animate-bounce"
                 href="https://wa.me/5219983027241"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <MessageCircle className="h-6 w-6" />
-                ¡Échale, Compa! 😆
+                Pide tus fotos por Whatsapp.
               </a>
-              <p className="mt-5 mx-auto max-w-[700px] text-yellow-100 md:text-xl">
-                Imagica.lol convierte tus selfies comunes en aventuras. ¡Sé un cantante de regional mexicano 🎤, monta un
-                alebrije 🐉, aparece en La Rosa de Guadalupe, actua en tu pelicula favorita, conviertete en gangster, caballero medieval, magnate o miles de personajes mas. 📺 - todo por WhatsApp.
+              <p className="mt-5 mx-auto max-w-[900px] text-yellow-100 text-lg lg:text-2xl">
+                Convierte tus selfies en aventuras. Actua en tu pelicula favorita 🎬, viaja por el mundo 🗽, conviertete en caballero medieval ⚔️, magnate o miles de personajes mas 🛩️. ¡Todo por WhatsApp!
               </p>
             </div>
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-pink-500 via-orange-400 to-yellow-400">
+        <section className="w-full py-8 md:py-15 lg:py-24 bg-gradient-to-b from-pink-500 via-orange-400 to-yellow-400">
           <div className="container px-4 md:px-6 mx-auto">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-purple-800 text-center mb-8">
               Cómo funciona
@@ -64,22 +65,23 @@ export default function Component() {
               <div className="flex flex-col items-center text-center">
                 <MessageCircle className="h-12 w-12 text-purple-800 mb-4" />
                 <h3 className="text-xl font-bold text-purple-900">1. Mándanos un Whats 💬</h3>
-                <p className="text-purple-950">Inicia una conversacion con Imagica en whatsapp aqui y paga tu sesion de 10 fotos de $399 pesos.</p>
+                <p className="text-purple-950">Inicia una conversación via Whatsapp y paga tu sesión de 10 fotos por $399 pesos.</p>
               </div>
               <div className="flex flex-col items-center text-center">
                 <Camera className="h-12 w-12 text-purple-800 mb-4" />
-                <h3 className="text-xl font-bold text-purple-900">2. Paga y manda 10 Fotos 📸</h3>
-                <p className="text-purple-950">Mandanos 10 fotos tuyas de buena calidad dode se vea claramente tu cara de distintos angulos. Puedes usar 🕶️ y 🧢 en algunas.</p>
+                <h3 className="text-xl font-bold text-purple-900">2. Envia tus selfies 🤳</h3>
+                <p className="text-purple-950">Mandanos selfies tuyas de buena calidad donde se vea claramente tu cara de distintos angulos. Puedes salir con 🕶️ y 🧢 en algunas.</p>
               </div>
               <div className="flex flex-col items-center text-center">
                 <Wand2 className="h-12 w-12 text-purple-800 mb-4" />
-                <h3 className="text-xl font-bold text-purple-900">3. Recibe la Magia 🎩✨</h3>
-                <p className="text-purple-950">Mientras entrenamos nuestro model con tus fotos. Selecciona 10 ideas nuestras o nuevas de fotos que quieres y las generaremos para ti.</p>
+                <h3 className="text-xl font-bold text-purple-900">3. Recibe la Magia ✨</h3>
+                <p className="text-purple-950">
+Mientras entrenamos nuestro modelo con tus fotos, elige 10 ideas (pueden ser nuestras o totalmente nuevas) que te gustaría ver. Las generaremos para ti.</p>
               </div>
             </div>
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-yellow-400 via-green-400 to-blue-400">
+        <section className="w-full py-8 md:py-25 lg:py-24 bg-gradient-to-b from-yellow-400 via-green-400 to-blue-400">
           <div className="container px-4 md:px-6 mx-auto">
             <div className="grid items-center gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_550px]">
               <img
@@ -89,9 +91,9 @@ export default function Component() {
                 src={Examples}
                 width="550"
               />
-              <div className="flex flex-col justify-center space-y-4">
-                <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-purple-900">
+              <div className="flex flex-col justify-center space-y-10">
+                <div className="space-y-4">
+                  <h2 className="tracking-normal text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-purple-900">
                     Ideas de Fotos 💡📸
                   </h2>
                   <p className="max-w-[600px] text-purple-950 md:text-xl">
@@ -114,12 +116,12 @@ export default function Component() {
         </section>
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-blue-400 via-indigo-400 to-purple-400">
           <div className="container px-4 md:px-6 mx-auto">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-yellow-300">
-                  ¿Listo para divertirte con nuevas fotos? 🤣💁‍♀️🕺
+            <div className="flex flex-col items-center justify-center space-y-10 text-center">
+              <div className="space-y-4">
+                <h2 className="tracking-normal text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-yellow-300">
+                  ¿Listo para divertirte con nuevas fotos? 🤣 💁‍♀️🕺
                 </h2>
-                <p className="mx-auto max-w-[600px] text-yellow-100 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className="mx-auto max-w-[900px] text-yellow-100 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                   ¡Únete a miles de personas felices que usan Imagica todos los dias!
                 </p>
               </div>
@@ -130,7 +132,7 @@ export default function Component() {
                 rel="noopener noreferrer"
               >
                 <MessageCircle className="h-6 w-6" />
-                ¡Ábrele al WhatsApp y Diviértete! 🤪
+                Pide tus fotos por Whatsapp.
               </a>
             </div>
           </div>
