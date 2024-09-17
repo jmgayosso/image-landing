@@ -5,5 +5,5 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   // base: '/'
-  base: 'https://jmgayosso.github.io/image-landing'
+  // base: 'https://jmgayosso.github.io/image-landing'
 })
