@@ -1,52 +1,51 @@
-# Workflow para construir y desplegar un proyecto Vite en GitHub Pages
-name: Deploy Vite to GitHub Pages
+# Flujo de trabajo simple para implementar contenido estático en Github Pages
+name: Implementar contenido estático a Pages
 
 on:
-  # Ejecuta en los pushes a la rama principal
+  # Se ejecuta en anotaciones dirigidas a la rama predeterminada
   push:
-    branches: ["main"]
+    branches: ['main']
 
-  # Permite ejecutar el workflow manualmente desde la pestaña de Actions
+  # Te permite ejecutar este flujo de trabajo manualmente desde la pestaña Acciones
   workflow_dispatch:
 
+# Establece los permisos de GITHUB_TOKEN para permitir la implementación en GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# Permite una implementación simultánea
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: 'pages'
+  cancel-in-progress: true
 
 jobs:
-  build:
+  # Trabajo de implementación único ya que solo estamos implementando
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'  # Usa la versión de Node.js que prefieras
-
+          node-version: 20
+          cache: 'npm'
       - name: Install dependencies
-        run: npm install
-
+        run: npm ci
       - name: Build
         run: npm run build
-
-      - name: Upload production-ready artifacts
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist  # La carpeta generada por Vite es 'dist'
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
+          # Upload dist folder
+          path: './dist'
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          branch: deploy  # La rama de GitHub Pages donde se desplegará
-          folder: dist  # Carpeta con los archivos generados por Vite

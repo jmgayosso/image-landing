@@ -3,7 +3,7 @@ import Examples from './assets/examples.png'
 import ImageCarousel from "./components/carousel"
 import iconoWhatsapp from "./assets/WhatsApp_icon.png"
 import './styles/customStyles.css'; // Importar el archivo de estilos
-// import Lottie from "lottie-react";
+// import Lottie from "lottie-react"; a
 // import Lottie from 'react-lottie';
 
 // import wizzardAnimation from "./assets/wizzardAnimation.json";
@@ -122,16 +122,12 @@ Mientras entrenamos nuestro modelo con tus fotos, elige 10 ideas (pueden ser nue
                 src={Examples}
                 width="550"
               /> */}
-              <div className="flex flex-col justify-center space-y-10">
-                <div className="space-y-4">
-                  <h2 className="tracking-cnormal text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-purple-900">
+                  <h2 className="tracking-cnormal my-10 text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-purple-900">
                     Ideas de Fotos 💡📸
                   </h2>
-                  {/* <p className="max-w-[600px] text-purple-950 md:text-xl">
-                    Con Imagica.lol, no solo tomas fotos - ¡creas nuevas realidades! ¡Conviértete en un luchador profesional 🤼‍♂️, un
-                    taquero experto 🌮, o protagoniza tu telenovela favorita 📺! ¡Las posibilidades son tan infinitas como los baches en la CDMX! 😂
-                  </p> */}
-                  <section className="image-carousel">
+              <div className="flex flex-col justify-center space-y-10 justify-center items-center">
+                <div className="space-y-4">
+                  <section className="image-carousel ">
                     <ImageCarousel />
                   </section>
                 </div>
