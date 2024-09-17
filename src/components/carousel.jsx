@@ -54,31 +54,31 @@ export default function ImageCarousel() {
     const pictureIdeas = [
         {
             image: ejemplo1,
-            description: '1 https://picsum.photos/id/238/200/300'
+            description: 'Magnate'
         },
         {
             image: ejemplo2,
-            description: '2 https://picsum.photos/id/237/200/300'
+            description: 'Princesa'
         },
         {
             image: ejemplo3,
-            description: '3 https://picsum.photos/id/237/200/300'
+            description: 'Jinete'
         },
-        {
-            image: ejemplo4,
-            description: '4 https://picsum.photos/id/237/200/300'
-        },
+        // {
+        //     image: ejemplo4,
+        //     description: 'Dios Griego'
+        // },
         {
             image: ejemplo5,
-            description: '5 https://picsum.photos/id/237/200/300'
+            description: 'Dios Griego'
         },
         {
             image: ejemplo6,
-            description: '6 https://picsum.photos/id/237/200/300'
+            description: 'Telettubbie'
         },
         {
             image: ejemplo7,
-            description: '7 https://picsum.photos/id/237/200/300'
+            description: 'Soldado Romano'
         },
     ];
 
@@ -117,7 +117,7 @@ export default function ImageCarousel() {
                         />
                     </div>
                     <div className="p-4">
-                        <p className="text-gray-700 text-sm">{idea.description}</p>
+                        <p className="text-gray-700 text-sm font-bold">{idea.description}</p>
                     </div>
                 </div>
             ))}

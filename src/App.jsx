@@ -123,7 +123,7 @@ Mientras entrenamos nuestro modelo con tus fotos, elige 10 ideas (pueden ser nue
                 width="550"
               /> */}
                   <h2 className="tracking-cnormal my-10 text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-purple-900">
-                    Ideas de Fotos 💡📸
+                    Ideas 💡📸
                   </h2>
               <div className="flex flex-col justify-center space-y-10 justify-center items-center">
                 <div className="space-y-4">
