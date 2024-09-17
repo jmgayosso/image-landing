@@ -1,148 +1,126 @@
-import {
-    Carousel,
-    initTWE,
-  } from "tw-elements";
-import { useEffect } from "react";
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
+import { useEffect, useState } from "react";
+
+import ejemplo1 from '../assets/ejemplo1.jpg';
+import ejemplo2 from '../assets/ejemplo2.jpg';
+import ejemplo3 from '../assets/ejemplo3.jpg';
+import ejemplo4 from '../assets/ejemplo4.jpg';
+import ejemplo5 from '../assets/ejemplo5.jpg';
+import ejemplo6 from '../assets/ejemplo6.jpg';
+import ejemplo7 from '../assets/ejemplo7.jpg';
 
 export default function ImageCarousel() {
-    useEffect(() => {
-        initTWE(Carousel)
-    }, []);
+    const [deviceType, setDeviceType] = useState('desktop');
+
+     // Detectar el tipo de dispositivo basado en el ancho de la ventana
+  useEffect(() => {
+    const updateDeviceType = () => {
+      const width = window.innerWidth;
+      if (width < 464) {
+        setDeviceType('mobile');
+      } else if (width < 1024) {
+        setDeviceType('tablet');
+      } else {
+        setDeviceType('desktop');
+      }
+    };
+
+    updateDeviceType(); // Llamar la primera vez
+    window.addEventListener('resize', updateDeviceType); // Actualizar cuando se redimensione la ventana
+
+    return () => window.removeEventListener('resize', updateDeviceType); // Limpiar el listener
+  }, []);
+
+    const responsive = {
+        superLargeDesktop: {
+            breakpoint: { max: 4000, min: 3000 },
+            items: 5
+        },
+        desktop: {
+            breakpoint: { max: 3000, min: 1024 },
+            items: 3
+        },
+        tablet: {
+            breakpoint: { max: 1024, min: 464 },
+            items: 2
+        },
+        mobile: {
+            breakpoint: { max: 464, min: 0 },
+            items: 1
+        }
+    };
+
+    const pictureIdeas = [
+        {
+            image: ejemplo1,
+            description: '1 https://picsum.photos/id/238/200/300'
+        },
+        {
+            image: ejemplo2,
+            description: '2 https://picsum.photos/id/237/200/300'
+        },
+        {
+            image: ejemplo3,
+            description: '3 https://picsum.photos/id/237/200/300'
+        },
+        {
+            image: ejemplo4,
+            description: '4 https://picsum.photos/id/237/200/300'
+        },
+        {
+            image: ejemplo5,
+            description: '5 https://picsum.photos/id/237/200/300'
+        },
+        {
+            image: ejemplo6,
+            description: '6 https://picsum.photos/id/237/200/300'
+        },
+        {
+            image: ejemplo7,
+            description: '7 https://picsum.photos/id/237/200/300'
+        },
+    ];
 
     return (
-        <div
-        id="carouselDarkVariant"
-        className="relative"
-        data-twe-carousel-init
-        data-twe-ride="carousel">
-        {/* <!-- Carousel indicators --> */}
-        <div
-            className="absolute inset-x-0 bottom-0 z-[2] mx-[15%] mb-4 flex list-none justify-center p-0"
-            data-twe-carousel-indicators>
-            <button
-            data-twe-target="#carouselDarkVariant"
-            data-twe-slide-to="0"
-            data-twe-carousel-active
-            className="mx-[3px] box-content h-[3px] w-[30px] flex-initial cursor-pointer border-0 border-y-[10px] border-solid border-transparent bg-black bg-clip-padding p-0 -indent-[999px] opacity-50 transition-opacity duration-[600ms] ease-[cubic-bezier(0.25,0.1,0.25,1.0)] motion-reduce:transition-none"
-            aria-current="true"
-            aria-label="Slide 1"></button>
-            <button
-            data-twe-target="#carouselDarkVariant"
-            className="mx-[3px] box-content h-[3px] w-[30px] flex-initial cursor-pointer border-0 border-y-[10px] border-solid border-transparent bg-black bg-clip-padding p-0 -indent-[999px] opacity-50 transition-opacity duration-[600ms] ease-[cubic-bezier(0.25,0.1,0.25,1.0)] motion-reduce:transition-none"
-            data-twe-slide-to="1"
-            aria-label="Slide 1"></button>
-            <button
-            data-twe-target="#carouselDarkVariant"
-            className="mx-[3px] box-content h-[3px] w-[30px] flex-initial cursor-pointer border-0 border-y-[10px] border-solid border-transparent bg-black bg-clip-padding p-0 -indent-[999px] opacity-50 transition-opacity duration-[600ms] ease-[cubic-bezier(0.25,0.1,0.25,1.0)] motion-reduce:transition-none"
-            data-twe-slide-to="2"
-            aria-label="Slide 1"></button>
-        </div>
-
-        {/* <!-- Carousel items --> */}
-        <div
-            className="relative w-full overflow-hidden after:clear-both after:block after:content-['']">
-            {/* <!-- First item --> */}
-            <div
-            className="relative float-left -mr-[100%] w-full !transform-none opacity-0 transition-opacity duration-[600ms] ease-in-out motion-reduce:transition-none"
-            data-twe-carousel-fade
-            data-twe-carousel-item
-            data-twe-carousel-active>
-            <img
-                src="https://mdbcdn.b-cdn.net/img/Photos/Slides/img%20(19).webp"
-                className="block w-full"
-                alt="Motorbike Smoke" />
-            <div
-                className="absolute inset-x-[15%] bottom-5 hidden py-5 text-center text-black md:block">
-                <h5 className="text-xl">First slide label</h5>
-                <p>
-                Some representative placeholder content for the first slide.
-                </p>
-            </div>
-            </div>
-            {/* <!-- Second item --> */}
-            <div
-            className="relative float-left -mr-[100%] hidden w-full !transform-none opacity-0 transition-opacity duration-[600ms] ease-in-out motion-reduce:transition-none"
-            data-twe-carousel-fade
-            data-twe-carousel-item>
-            <img
-                src="https://mdbcdn.b-cdn.net/img/Photos/Slides/img%20(35).webp"
-                className="block w-full"
-                alt="Mountaintop" />
-            <div
-                className="absolute inset-x-[15%] bottom-5 hidden py-5 text-center text-black md:block">
-                <h5 className="text-xl">Second slide label</h5>
-                <p>
-                Some representative placeholder content for the second slide.
-                </p>
-            </div>
-            </div>
-            {/* <!-- Third item --> */}
-            <div
-            className="relative float-left -mr-[100%] hidden w-full !transform-none opacity-0 transition-opacity duration-[600ms] ease-in-out motion-reduce:transition-none"
-            data-twe-carousel-fade
-            data-twe-carousel-item>
-            <img
-                src="https://mdbcdn.b-cdn.net/img/Photos/Slides/img%20(40).webp"
-                className="block w-full"
-                alt="Woman Reading a Book" />
-            <div
-                className="absolute inset-x-[15%] bottom-5 hidden py-5 text-center text-black md:block">
-                <h5 className="text-xl">Third slide label</h5>
-                <p>
-                Some representative placeholder content for the third slide.
-                </p>
-            </div>
-            </div>
-        </div>
-
-        {/* <!-- Carousel controls - prev item--> */}
-        <button
-            className="absolute bottom-0 left-0 top-0 z-[1] flex w-[15%] items-center justify-center border-0 bg-none p-0 text-center text-black opacity-50 transition-opacity duration-150 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] hover:text-black hover:no-underline hover:opacity-90 hover:outline-none focus:text-black focus:no-underline focus:opacity-90 focus:outline-none motion-reduce:transition-none"
-            type="button"
-            data-twe-target="#carouselDarkVariant"
-            data-twe-slide="prev">
-            <span className="inline-block h-8 w-8 dark:grayscale">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="h-6 w-6">
-                <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 19.5L8.25 12l7.5-7.5" />
-            </svg>
-            </span>
-            <span
-            className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]"
-            >Previous</span>
-        </button>
-        {/* <!-- Carousel controls - next item--> */}
-        <button
-            className="absolute bottom-0 right-0 top-0 z-[1] flex w-[15%] items-center justify-center border-0 bg-none p-0 text-center text-black opacity-50 transition-opacity duration-150 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] hover:text-black hover:no-underline hover:opacity-90 hover:outline-none focus:text-black focus:no-underline focus:opacity-90 focus:outline-none motion-reduce:transition-none"
-            type="button"
-            data-twe-target="#carouselDarkVariant"
-            data-twe-slide="next">
-            <span className="inline-block h-8 w-8 dark:grayscale">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="h-6 w-6">
-                <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-            </svg>
-            </span>
-            <span
-            className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]"
-            >Next</span>
-        </button>
-    </div>
-    )
+        <Carousel
+            swipeable={false}
+            draggable={false}
+            responsive={responsive}
+            ssr={true}
+            infinite={false}
+            autoPlay={true}
+            focusOnSelect={false}
+            autoPlaySpeed={3000}
+            keyBoardControl={true}
+            customTransition="all 3s linear"
+            transitionDuration={1000}
+            containerClass="carousel-container"
+            removeArrowOnDeviceType={["tablet", "mobile"]}
+            deviceType={deviceType}
+            dotListClass="custom-dot-list-style"
+            itemClass="carousel-item-padding-40-px"
+            pauseOnHover={true}
+            rewind={true}
+            rewindWithAnimation={true}
+        >
+            {pictureIdeas.map((idea, index) => (
+                <div
+                    key={index}
+                    className="bg-white shadow-lg rounded-lg overflow-hidden mx-4 "
+                >
+                    <div className="relative overflow-hidden" style={{height: 400}}>
+                        <img
+                            src={idea.image}
+                            alt={`Card Image ${index}`}
+                            className="w-full h-full object-cover transition transform duration-300 ease-in-out hover:scale-110"
+                        />
+                    </div>
+                    <div className="p-4">
+                        <p className="text-gray-700 text-sm">{idea.description}</p>
+                    </div>
+                </div>
+            ))}
+        </Carousel>
+    );
 }

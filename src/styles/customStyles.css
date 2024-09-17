@@ -1,0 +1,19 @@
+.tracking-cnormal {
+    letter-spacing: 0.020px !important;
+}
+
+.image-carousel {
+    width: 90vw;
+  }
+  
+  @media (min-width: 768px) {
+    .image-carousel {
+      width: 80vw;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .image-carousel {
+      width: 70vw;
+    }
+  }
