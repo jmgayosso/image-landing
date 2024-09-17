@@ -3,7 +3,7 @@ import Examples from './assets/examples.png'
 import ImageCarousel from "./components/carousel"
 import iconoWhatsapp from "./assets/WhatsApp_icon.png"
 import './styles/customStyles.css'; // Importar el archivo de estilos
-// import Lottie from "lottie-react";
+// import Lottie from "lottie-react"; a
 // import Lottie from 'react-lottie';
 
 // import wizzardAnimation from "./assets/wizzardAnimation.json";
