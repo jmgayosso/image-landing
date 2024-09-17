@@ -48,5 +48,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
         with:
-          branch: gh-pages  # La rama de GitHub Pages donde se desplegará
+          branch: deploy  # La rama de GitHub Pages donde se desplegará
           folder: dist  # Carpeta con los archivos generados por Vite
