@@ -116,8 +116,8 @@ export default function ImageCarousel() {
                             className="w-full h-full object-cover transition transform duration-300 ease-in-out hover:scale-110"
                         />
                     </div>
-                    <div className="p-4">
-                        <p className="text-gray-700 text-sm font-bold">{idea.description}</p>
+                    <div className="p-4 flex justify-center">
+                        <p className="text-gray md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">{idea.description}</p>
                     </div>
                 </div>
             ))}
