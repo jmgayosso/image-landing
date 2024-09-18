@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import Slider from 'react-slick';
 import axios from 'axios';
+import { Instagram } from 'lucide-react';
+import imagicaProfile from '../assets/imagicaProfile.png'
 
 // Importa los estilos CSS de react-slick
 import 'slick-carousel/slick/slick.css';
@@ -9,6 +11,7 @@ import 'slick-carousel/slick/slick-theme.css';
 
 export default function InstagramCarousel({ accessToken }) {
   const [posts, setPosts] = useState([]);
+  const [profileInfo, setProfileInfo] = useState(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -20,6 +23,17 @@ export default function InstagramCarousel({ accessToken }) {
       }
     };
 
+    const fetchProfileInfo = async () => {
+        try {
+          const response = await axios.get(`https://graph.instagram.com/me?fields=id,username,account_type,media_count,profile_picture_url&access_token=${accessToken}`);
+          response.data.profile_picture_url = imagicaProfile
+          setProfileInfo(response.data);
+        } catch (error) {
+          console.error('Error fetching profile info:', error);
+        }
+      };
+
+    // fetchProfileInfo()
     fetchPosts();
   }, []);
 
@@ -60,17 +74,42 @@ export default function InstagramCarousel({ accessToken }) {
 
   return (
     <div className="container mx-auto px-4 py-8">
+    <div className="flex items-center justify-between mb-6">
+        {/* <h2 className="text-2xl font-bold">Estamos en Insta</h2> */}
+        {/* {profileInfo && (
+          <a
+            href={`https://www.instagram.com/${profileInfo.username}/`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+          >
+            {profileInfo.profile_picture_url ? (
+              <img
+                src={profileInfo.profile_picture_url}
+                alt={profileInfo.username}
+                className="w-10 h-10 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                <Instagram className="w-6 h-6 text-gray-500" />
+              </div>
+            )}
+            <span className="text-sm font-medium">{profileInfo.username}</span>
+          </a>
+        )} */}
+      </div>
       <Slider {...settings} className="instagram-carousel">
         {posts.map((post) => (
           <div key={post.id} className="px-2">
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden h-[400px] flex flex-col">
-              <div className="h-64 overflow-hidden">
+            {/* Add h-[400px] */}
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
+              <div className="h-64 overflow-hidden bg-slate-800">
                 {post.media_type === 'IMAGE' ? (
-                  <img src={post.media_url} alt={post.caption} className="w-full h-full object-cover" style={{ aspectRatio: '3/4'}}/>
+                  <img src={post.media_url} alt={post.caption} className="w-full h-full object-contain" style={{ aspectRatio: '3/4'}}/>
                 ) : post.media_type === 'VIDEO' ? (
                   <video src={post.media_url} className="w-full h-full object-cover" controls />
                 ) : (
-                  <img src={post.thumbnail_url} alt={post.caption} className="w-full h-full object-cover" />
+                  <img src={post.thumbnail_url} alt={post.caption} className="w-full h-full object-contain" />
                 )}
               </div>
               <div className="p-4 flex-grow flex flex-col justify-between">

@@ -3,6 +3,8 @@ import Examples from './assets/examples.png'
 import ImageCarousel from "./components/carousel"
 import InstagramFeed from "./components/instagramFeed"
 import iconoWhatsapp from "./assets/WhatsApp_icon.png"
+import imagicaProfile from './assets/imagicaProfile.png'
+
 import './styles/customStyles.css'; // Importar el archivo de estilos
 // import Lottie from "lottie-react"; a
 // import Lottie from 'react-lottie';
@@ -134,11 +136,31 @@ Mientras entrenamos nuestro modelo con tus fotos, elige 10 ideas (pueden ser nue
                   <section>
                     <ImageCarousel />
                   </section>
-                  <section>
-                    <InstagramFeed accessToken={accessToken} />
-                  </section>
                 </div>
               </div>
+              <div className="container px-4 md:px-6 mx-auto flex items-center justify-start gap-x-5 mt-20">
+                <h2 className="tracking-cnormal my-5 text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-purple-900">
+                  Estamos en Insta
+                </h2>
+                  <span className="animate-pulse">
+                    <a
+                      href={`https://www.instagram.com/imagica_ai/`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+                    >
+                      <img
+                        src={imagicaProfile}
+                        alt="imagica_ai"
+                        className="w-14 h-14 rounded-full object-cover"
+                      />
+                    <span className="text-md font-medium">imagica_ai</span>
+                  </a>
+                  </span>
+              </div>
+              <section>
+                    <InstagramFeed accessToken={accessToken} />
+              </section>
             </div>
           </div>
         </section>

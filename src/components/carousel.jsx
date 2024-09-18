@@ -49,6 +49,7 @@ export default function ImageCarousel() {
           }
         ]
       };
+      
 
      // Detectar el tipo de dispositivo basado en el ancho de la ventana
         useEffect(() => {
