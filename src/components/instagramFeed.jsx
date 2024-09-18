@@ -72,6 +72,8 @@ export default function InstagramCarousel({ accessToken }) {
     ]
   };
 
+  const defaultCaption = "Sorprende, inspira y diviértete. Tus fotos, como nunca las imaginaste. 😜📲"
+
   return (
     <div className="container mx-auto px-4 py-8">
     <div className="flex items-center justify-between mb-6">
@@ -102,7 +104,7 @@ export default function InstagramCarousel({ accessToken }) {
         {posts.map((post) => (
           <div key={post.id} className="px-2">
             {/* Add h-[400px] */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-[360px]">
               <div className="h-64 overflow-hidden bg-slate-800">
                 {post.media_type === 'IMAGE' ? (
                   <img src={post.media_url} alt={post.caption} className="w-full h-full object-contain" style={{ aspectRatio: '3/4'}}/>
@@ -113,7 +115,7 @@ export default function InstagramCarousel({ accessToken }) {
                 )}
               </div>
               <div className="p-4 flex-grow flex flex-col justify-between">
-                <p className="text-sm text-gray-600 line-clamp-3">{post.caption}</p>
+                <p className="text-sm text-gray-600 line-clamp-2 overflow-hidden">{post.caption ?? defaultCaption}</p>
                 <a 
                   href={post.permalink} 
                   target="_blank" 

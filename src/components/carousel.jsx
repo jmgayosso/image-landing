@@ -11,6 +11,9 @@ import ejemplo4 from '../assets/ejemplo4.jpg';
 import ejemplo5 from '../assets/ejemplo5.jpg';
 import ejemplo6 from '../assets/ejemplo6.jpg';
 import ejemplo7 from '../assets/ejemplo7.jpg';
+import idea8 from '../assets/idea8.jpg';
+import idea9 from '../assets/idea9.jpg';
+import idea10 from '../assets/idea10.jpg';
 
 export default function ImageCarousel() {
     const [deviceType, setDeviceType] = useState('desktop');
@@ -76,17 +79,25 @@ export default function ImageCarousel() {
             description: 'Magnate'
         },
         {
+            image: idea8,
+            description: 'Terminator'
+        },
+        {
             image: ejemplo2,
             description: 'Princesa'
+        },
+        {
+            image: idea9,
+            description: 'Sireno'
         },
         {
             image: ejemplo3,
             description: 'Jinete'
         },
-        // {
-        //     image: ejemplo4,
-        //     description: 'Dios Griego'
-        // },
+        {
+            image: idea10,
+            description: 'Fiester@'
+        },
         {
             image: ejemplo5,
             description: 'Dios Griego'
@@ -107,7 +118,7 @@ export default function ImageCarousel() {
                 {pictureIdeas.map((idea, index) => (
                     <div key={index} className='px-2'>
                         <div
-                            className="bg-white rounded-lg shadow-lg overflow-hidden h-[400px] flex flex-col"
+                            className="bg-white rounded-lg shadow-lg overflow-hidden h-[350px] flex flex-col"
                         >
                             <div className="h-80 overflow-hidden">
                                 <img
@@ -116,7 +127,7 @@ export default function ImageCarousel() {
                                     className="w-full h-full object-cover transition transform duration-300 ease-in-out hover:scale-110"
                                 />
                             </div>
-                            <div className="p-4 flex justify-center">
+                            <div className="p-2 flex justify-center items-center">
                                 <p className="text-gray md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">{idea.description}</p>
                             </div>
                         </div>

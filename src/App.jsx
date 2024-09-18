@@ -81,7 +81,6 @@ export default function Component() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {/* <MessageCircle className="h-6 w-6" /> */}
                 <img className="h-6 w-6" src={iconoWhatsapp} alt="Icono de WhatsApp" />
                 Pide tus fotos por Whatsapp.
               </a>
@@ -138,11 +137,24 @@ Mientras entrenamos nuestro modelo con tus fotos, elige 10 ideas (pueden ser nue
                   </section>
                 </div>
               </div>
-              <div className="container px-4 md:px-6 mx-auto flex items-center justify-start gap-x-5 mt-20">
+              <div>
+                <div className="flex flex-col items-center text-center mt-20">
+                    <a
+                    className="bg-green-500 text-white hover:bg-green-600 flex items-center gap-2 text-lg px-6 py-3 rounded-full animate-bounce"
+                    href="https://wa.me/5219983027241"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img className="h-6 w-6" src={iconoWhatsapp} alt="Icono de WhatsApp" />
+                    Pide tus fotos por Whatsapp.
+                  </a>
+                </div>
+              </div>
+              <div className="container px-4 md:px-6 mx-auto flex items-center justify-start gap-x-5 mt-16">
                 <h2 className="tracking-cnormal my-5 text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-purple-900">
                   Estamos en Insta
                 </h2>
-                  <span className="animate-pulse">
+                  {/* <span className="animate-pulse">
                     <a
                       href={`https://www.instagram.com/imagica_ai/`}
                       target="_blank"
@@ -156,7 +168,7 @@ Mientras entrenamos nuestro modelo con tus fotos, elige 10 ideas (pueden ser nue
                       />
                     <span className="text-md font-medium">imagica_ai</span>
                   </a>
-                  </span>
+                  </span> */}
               </div>
               <section>
                     <InstagramFeed accessToken={accessToken} />
@@ -181,7 +193,6 @@ Mientras entrenamos nuestro modelo con tus fotos, elige 10 ideas (pueden ser nue
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {/* <MessageCircle className="h-6 w-6" /> */}
                 <img className="h-6 w-6" src={iconoWhatsapp} alt="Icono de WhatsApp" />
                 Pide tus fotos por Whatsapp.
               </a>
