@@ -107,11 +107,23 @@ export default function InstagramCarousel({ accessToken }) {
             <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-[360px]">
               <div className="h-64 overflow-hidden bg-slate-800">
                 {post.media_type === 'IMAGE' ? (
+                  <a 
+                  href={post.permalink} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                >
                   <img src={post.media_url} alt={post.caption} className="w-full h-full object-contain" style={{ aspectRatio: '3/4'}}/>
+                </a>
                 ) : post.media_type === 'VIDEO' ? (
                   <video src={post.media_url} className="w-full h-full object-cover" controls />
                 ) : (
+                  <a 
+                  href={post.permalink} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                >
                   <img src={post.thumbnail_url} alt={post.caption} className="w-full h-full object-contain" />
+                </a>
                 )}
               </div>
               <div className="p-4 flex-grow flex flex-col justify-between">
