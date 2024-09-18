@@ -112,14 +112,20 @@ export default function Component() {
 Mientras entrenamos nuestro modelo con tus fotos, elige 10 ideas (pueden ser nuestras o totalmente nuevas) que te gustaría ver. Las generaremos para ti.</p>
               </div>
             </div>
+            <div className="flex justify-center mt-20">
+              <stripe-buy-button
+                buy-button-id="buy_btn_1Q03QLIZsF3d42AFObXkDyWI"
+                publishable-key="pk_live_51IbSIBIZsF3d42AF1kneL4R37qjTgmW04pPuMHWjcLUaHX36u9aYHZS9a7eCr02RY50ncZIfij9s9EzHKOGdDy1j00l08Cx1jf"
+                />
+            </div>
           </div>
         </section>
-        <section className="w-full py-8 md:py-25 lg:py-24 bg-gradient-to-b from-yellow-400 via-green-400 to-blue-400">
+        <section className="w-full py-8 md:py-5 lg:py-5 bg-gradient-to-b from-yellow-400 via-green-400 to-blue-400">
           <div className="px-4 md:px-6 mx-auto">
             <div className="">
             {/* <div className="grid items-center"> */}
               <div className="container px-4 md:px-6 mx-auto">
-                <h2 className="tracking-cnormal my-10 text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-purple-900">
+                <h2 className="tracking-cnormal my-5 text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-purple-900">
                   Ideas 💡📸
                 </h2>
               </div>
