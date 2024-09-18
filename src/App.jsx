@@ -1,6 +1,7 @@
 import { Camera, Wand2, MessageCircle } from "lucide-react"
 import Examples from './assets/examples.png'
 import ImageCarousel from "./components/carousel"
+import InstagramFeed from "./components/instagramFeed"
 import iconoWhatsapp from "./assets/WhatsApp_icon.png"
 import './styles/customStyles.css'; // Importar el archivo de estilos
 // import Lottie from "lottie-react"; a
@@ -9,6 +10,7 @@ import './styles/customStyles.css'; // Importar el archivo de estilos
 // import wizzardAnimation from "./assets/wizzardAnimation.json";
 
 export default function Component() {
+  const accessToken = import.meta.env.VITE_INSTAGRAM_ACCESS_TOKEN;
 
   return (
     <div className="flex flex-col min-h-[100dvh] bg-gradient-to-b from-yellow-100 via-orange-200 to-pink-200 font-sans">
@@ -113,33 +115,23 @@ Mientras entrenamos nuestro modelo con tus fotos, elige 10 ideas (pueden ser nue
           </div>
         </section>
         <section className="w-full py-8 md:py-25 lg:py-24 bg-gradient-to-b from-yellow-400 via-green-400 to-blue-400">
-          <div className="container px-4 md:px-6 mx-auto">
-            <div className="grid items-center">
-              {/* <img
-                alt="Transformaciones de Imagica"
-                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
-                height="310"
-                src={Examples}
-                width="550"
-              /> */}
-                  <h2 className="tracking-cnormal my-10 text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-purple-900">
-                    Ideas 💡📸
-                  </h2>
-              <div className="flex flex-col justify-center space-y-10 justify-center items-center">
-                <div className="space-y-4">
-                  <section className="image-carousel ">
+          <div className="px-4 md:px-6 mx-auto">
+            <div className="">
+            {/* <div className="grid items-center"> */}
+              <div className="container px-4 md:px-6 mx-auto">
+                <h2 className="tracking-cnormal my-10 text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-purple-900">
+                  Ideas 💡📸
+                </h2>
+              </div>
+              <div className="flex flex-col justify-center space-y-10">
+                <div className="">
+                  <section>
                     <ImageCarousel />
                   </section>
+                  <section>
+                    <InstagramFeed accessToken={accessToken} />
+                  </section>
                 </div>
-                {/* <a
-                  className="bg-purple-600 text-white hover:bg-purple-700 flex items-center gap-2 px-6 py-3 w-fit rounded-full animate-pulse"
-                  href="https://wa.me/5219983027241"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <MessageCircle className="h-5 w-5" />
-                  ¡Ándale, Pruébalo en WhatsApp! 🚀
-                </a> */}
               </div>
             </div>
           </div>

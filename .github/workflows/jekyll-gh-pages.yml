@@ -35,6 +35,9 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
+          # Añadir las variables de entorno antes de la instalación de dependencias
+      - name: Set environment variables
+        run: echo "VITE_INSTAGRAM_ACCESS_TOKEN=${{ secrets.VITE_INSTAGRAM_ACCESS_TOKEN }}" >> $GITHUB_ENV
       - name: Install dependencies
         run: npm ci
       - name: Build
