@@ -22,7 +22,7 @@ export default function Component() {
         href="https://wa.me/5219983027241"
         target="_blank"
         rel="noopener noreferrer"
-        style={{ position: 'fixed', bottom: 30, right: 30, zIndex: 999}}
+        style={{ position: 'fixed', bottom: 50, right: 30, zIndex: 999}}
       >
         <img className="h-20 w-20 transition transform duration-300 ease-in-out hover:scale-110"  src={iconoWhatsapp} alt="Icono de WhatsApp" />
       </a>
@@ -206,10 +206,15 @@ Mientras entrenamos nuestro modelo con tus fotos, elige 10 ideas (pueden ser nue
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t bg-gradient-to-r from-purple-400 to-pink-400 border-yellow-300">
         <p className="text-xs text-yellow-200">© 2024 Imagica.lol S.A. de C.V. Todos los derechos reservados.</p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
+        <a 
+          className="text-xs hover:underline underline-offset-4 text-yellow-200" 
+          href="./agreement.pdf" 
+          target="_blank" 
+          rel="noopener noreferrer">
+          Términos y Condiciones
+        </a>
+
           {/* <a className="text-xs hover:underline underline-offset-4 text-yellow-200" href="#">
-            Términos y Condiciones
-          </a>
-          <a className="text-xs hover:underline underline-offset-4 text-yellow-200" href="#">
             Privacidad
           </a> */}
         </nav>
