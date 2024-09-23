@@ -16,12 +16,24 @@ export default function InstagramCarousel({ accessToken }) {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(`https://graph.instagram.com/me/media?fields=id,media_type,media_url,thumbnail_url,permalink,caption&access_token=${accessToken}`);
-        setPosts(response.data.data);
+        let allPosts = [];
+        let nextPageUrl = `https://graph.instagram.com/me/media?fields=id,media_type,media_url,thumbnail_url,permalink,caption,timestamp&access_token=${accessToken}`;
+    
+        while (nextPageUrl) {
+          const response = await axios.get(nextPageUrl);
+          allPosts = [...allPosts, ...response.data.data];
+          nextPageUrl = response.data.paging?.next; // Obtiene la URL de la siguiente página
+        }
+    
+        // Ordenar por fecha (timestamp) de forma descendente
+        allPosts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+        setPosts(allPosts);
       } catch (error) {
         console.error('Error fetching Instagram posts:', error);
       }
     };
+    
 
     const fetchProfileInfo = async () => {
         try {
