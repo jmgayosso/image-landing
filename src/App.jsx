@@ -115,7 +115,7 @@ Mientras entrenamos nuestro modelo con tus fotos, elige 10 ideas (pueden ser nue
             </div>
             <div className="flex justify-center mt-20">
               <stripe-buy-button
-                buy-button-id="buy_btn_1Q03QLIZsF3d42AFObXkDyWI"
+                buy-button-id="buy_btn_1Q5UM1IZsF3d42AFTYvtXQfI"
                 publishable-key="pk_live_51IbSIBIZsF3d42AF1kneL4R37qjTgmW04pPuMHWjcLUaHX36u9aYHZS9a7eCr02RY50ncZIfij9s9EzHKOGdDy1j00l08Cx1jf"
                 />
             </div>
