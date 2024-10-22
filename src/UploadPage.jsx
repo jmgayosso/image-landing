@@ -2,13 +2,29 @@ import React, { useState, useCallback, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { X, Upload, Send, Camera, AlertCircle } from 'lucide-react'
 
+import ejemplo1 from './assets/ejemplo1.jpg';
+import ejemplo2 from './assets/ejemplo2.jpg';
+import ejemplo3 from './assets/ejemplo3.jpg';
+import ejemplo4 from './assets/ejemplo4.jpg';
+import ejemplo5 from './assets/ejemplo5.jpg';
+import ejemplo6 from './assets/ejemplo6.jpg';
+import ejemplo7 from './assets/ejemplo7.jpg';
+import idea8 from './assets/idea8.jpg';
+import idea9 from './assets/idea9.jpg';
+import idea10 from './assets/idea10.jpg';
+
 // Simulated themes for image generation
 const themes = [
-  { id: 1, name: 'Superhéroe', image: '/placeholder.svg?height=100&width=100' },
-  { id: 2, name: 'Viaje en el tiempo', image: '/placeholder.svg?height=100&width=100' },
-  { id: 3, name: 'Fantasía medieval', image: '/placeholder.svg?height=100&width=100' },
-  { id: 4, name: 'Explorador espacial', image: '/placeholder.svg?height=100&width=100' },
-  { id: 5, name: 'Estrella de cine', image: '/placeholder.svg?height=100&width=100' },
+  { id: 1, name: 'Superhéroe', image: ejemplo1 },
+  { id: 2, name: 'Viaje en el tiempo', image: ejemplo2 },
+  { id: 3, name: 'Fantasía medieval', image: ejemplo3 },
+  { id: 4, name: 'Explorador espacial', image: ejemplo4 },
+  { id: 5, name: 'Estrella de cine', image: ejemplo5 },
+  { id: 6, name: 'Caballero medieval', image: ejemplo6 },
+  { id: 7, name: 'Cazador de animales', image: ejemplo7 },
+  { id: 8, name: 'Superhéroe', image: idea8 },
+  { id: 9, name: 'Fantasía medieval', image: idea9 },
+  { id: 10, name: 'Explorador espacial', image: idea10 },
 ]
 
 export default function ImageUpload() {
@@ -19,7 +35,6 @@ export default function ImageUpload() {
   const [userName, setUserName] = useState('Usuario')
 
   useEffect(() => {
-    // Simulating getting the user's name from a query parameter or context
     const urlParams = new URLSearchParams(window.location.search)
     const name = urlParams.get('name')
     if (name) {
@@ -59,7 +74,6 @@ export default function ImageUpload() {
         )
       )
     }
-    // Simulate random success/failure
     setImages(prevImages => 
       prevImages.map(img => 
         img.id === id ? { ...img, status: Math.random() > 0.2 ? 'uploaded' : 'error' } : img
@@ -73,7 +87,6 @@ export default function ImageUpload() {
       return
     }
     setIsProcessing(true)
-    // Simulating API call
     await new Promise(resolve => setTimeout(resolve, 2000))
     setIsProcessing(false)
     setImages([])
@@ -137,13 +150,13 @@ export default function ImageUpload() {
           {images.length > 0 && (
             <div className="mt-8">
               <h3 className="text-xl font-bold text-purple-800 mb-4">Imágenes seleccionadas:</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
                 {images.map((image) => (
                   <div key={image.id} className="relative">
                     <img
                       src={image.preview}
                       alt={`Uploaded ${image.file.name}`}
-                      className="w-full h-32 object-cover rounded-lg"
+                      className="w-full h-60 object-cover rounded-lg"
                     />
                     <button
                       onClick={() => removeImage(image.id)}
@@ -178,9 +191,9 @@ export default function ImageUpload() {
             </div>
           )}
 
-          <div className="mt-8">
+          <div className="mt-12">
             <h3 className="text-xl font-bold text-purple-800 mb-4">Selecciona una temática:</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
               {themes.map((theme) => (
                 <div
                   key={theme.id}
@@ -189,15 +202,15 @@ export default function ImageUpload() {
                     selectedTheme === theme.name ? 'border-purple-500' : 'border-gray-300'
                   }`}
                 >
-                  <img src={theme.image} alt={theme.name} className="w-full h-24 object-cover rounded mb-2" />
+                  <img src={theme.image} alt={theme.name} className="w-full h-60 object-cover rounded mb-2" />
                   <p className="text-center text-sm">{theme.name}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="mt-6">
-            <label htmlFor="customTheme" className="block text-sm font-medium text-purple-700">
+          <div className="mt-8">
+            <label htmlFor="customTheme" className="block text-sm font-medium text-purple-700 mb-2">
               O describe tu propia temática:
             </label>
             <input
@@ -205,7 +218,7 @@ export default function ImageUpload() {
               id="customTheme"
               value={customTheme}
               onChange={(e) => setCustomTheme(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
               placeholder="Describe tu temática personalizada aquí"
             />
           </div>
@@ -213,7 +226,7 @@ export default function ImageUpload() {
           <button
             onClick={handleSubmit}
             disabled={images.length < 6 || images.length > 10 || (!selectedTheme && !customTheme)}
-            className="mt-8 bg-green-500 text-white hover:bg-green-600 flex items-center justify-center gap-2 text-xl px-6 py-3 rounded-full w-full disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-8 bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 flex items-center justify-center gap-2 text-xl px-6 py-3 rounded-full w-full disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 ease-in-out transform hover:scale-105"
           >
             <Send className="h-6 w-6" />
             Enviar Imágenes
