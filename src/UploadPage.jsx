@@ -15,16 +15,15 @@ import idea10 from './assets/idea10.jpg';
 
 // Simulated themes for image generation
 const themes = [
-  { id: 1, name: 'Superhéroe', image: ejemplo1 },
-  { id: 2, name: 'Viaje en el tiempo', image: ejemplo2 },
-  { id: 3, name: 'Fantasía medieval', image: ejemplo3 },
-  { id: 4, name: 'Explorador espacial', image: ejemplo4 },
-  { id: 5, name: 'Estrella de cine', image: ejemplo5 },
-  { id: 6, name: 'Caballero medieval', image: ejemplo6 },
-  { id: 7, name: 'Cazador de animales', image: ejemplo7 },
-  { id: 8, name: 'Superhéroe', image: idea8 },
-  { id: 9, name: 'Fantasía medieval', image: idea9 },
-  { id: 10, name: 'Explorador espacial', image: idea10 },
+  { id: 1, name: 'Magnate', image: ejemplo1 },
+  { id: 2, name: 'Princesa', image: ejemplo2 },
+  { id: 3, name: 'Jinete', image: ejemplo3 },
+  { id: 5, name: 'Dios Griego', image: ejemplo5 },
+  { id: 6, name: 'Telettubbie', image: ejemplo6 },
+  { id: 7, name: 'Soldado Romano', image: ejemplo7 },
+  { id: 8, name: 'Terminator', image: idea8 },
+  { id: 9, name: 'Sireno', image: idea9 },
+  { id: 10, name: 'Fiester', image: idea10 },
 ]
 
 export default function ImageUpload() {
@@ -193,16 +192,18 @@ export default function ImageUpload() {
 
           <div className="mt-12">
             <h3 className="text-xl font-bold text-purple-800 mb-4">Selecciona una temática:</h3>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 gap-4">
               {themes.map((theme) => (
                 <div
                   key={theme.id}
                   onClick={() => setSelectedTheme(theme.name)}
-                  className={`cursor-pointer border-2 rounded-lg p-2 ${
-                    selectedTheme === theme.name ? 'border-purple-500' : 'border-gray-300'
+                  className={`cursor-pointer border-2 rounded-lg p-2 transition-all duration-300 transform ${
+                    selectedTheme === theme.name
+                      ? 'border-purple-500 bg-purple-100 scale-105 shadow-lg'
+                      : 'border-gray-300 bg-white scale-100'
                   }`}
                 >
-                  <img src={theme.image} alt={theme.name} className="w-full h-60 object-cover rounded mb-2" />
+                  <img src={theme.image} alt={theme.name} className="w-full h-70 object-cover rounded mb-2" />
                   <p className="text-center text-sm">{theme.name}</p>
                 </div>
               ))}
