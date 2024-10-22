@@ -16,14 +16,14 @@ import idea10 from './assets/idea10.jpg';
 // Simulated themes for image generation
 const themes = [
   { id: 1, name: 'Magnate', image: ejemplo1 },
-  { id: 2, name: 'Princesa', image: ejemplo2 },
+  { id: 10, name: 'Fiester', image: idea10 },
   { id: 3, name: 'Jinete', image: ejemplo3 },
+  { id: 2, name: 'Princesa', image: ejemplo2 },
+  { id: 9, name: 'Sireno', image: idea9 },
   { id: 5, name: 'Dios Griego', image: ejemplo5 },
   { id: 6, name: 'Telettubbie', image: ejemplo6 },
-  { id: 7, name: 'Soldado Romano', image: ejemplo7 },
   { id: 8, name: 'Terminator', image: idea8 },
-  { id: 9, name: 'Sireno', image: idea9 },
-  { id: 10, name: 'Fiester', image: idea10 },
+  { id: 7, name: 'Soldado Romano', image: ejemplo7 },
 ]
 
 export default function ImageUpload() {
