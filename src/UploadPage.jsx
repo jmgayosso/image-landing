@@ -44,7 +44,7 @@ export default function ImageUpload() {
   const token = searchParams.get('token');
   const navigate = useNavigate();
 
-  const { validateToken } = useImagica();
+  const { validateToken, uploadImage } = useImagica();
 
   // Cuando la pagina se carga
   useEffect(() => {
@@ -69,6 +69,29 @@ export default function ImageUpload() {
     fetchImagicaData();
   }, [token, navigate]);
 
+  // Nueva función para manejar la subida de imágenes al backend
+  const handleImageUpload = useCallback(async (image) => {
+    try {
+      // Llamar a uploadImage de useImagica para subir la imagen
+      await uploadImage({image: image.file, token}); 
+
+      // Actualizar el estado para marcar la imagen como subida
+      setImages(prevImages =>
+        prevImages.map(img => 
+          img.id === image.id ? { ...img, status: 'uploaded', uploadProgress: 100 } : img
+        )
+      );
+    } catch (error) {
+      // Manejo de errores: actualizar el estado para marcar la imagen con error
+      setImages(prevImages =>
+        prevImages.map(img => 
+          img.id === image.id ? { ...img, status: 'error' } : img
+        )
+      );
+      console.error('Error al subir la imagen:', error);
+    }
+  }, [uploadImage]);
+
   const onDrop = useCallback((acceptedFiles) => {
     setImages(prevImages => {
       const newImages = acceptedFiles.map(file => ({
@@ -77,55 +100,35 @@ export default function ImageUpload() {
         id: Math.random().toString(36).substring(7),
         uploadProgress: 0,
         status: 'uploading' // 'uploading', 'uploaded', 'error'
-      }))
-      return [...prevImages, ...newImages].slice(0, 10)
-    })
-  }, [])
+      }));
+      
+      // Iniciar la subida de cada imagen al backend
+      newImages.forEach(image => handleImageUpload(image));
+
+      return [...prevImages, ...newImages].slice(0, 10);
+    });
+  }, [handleImageUpload]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {'image/*': []},
     maxSize: 2 * 1024 * 1024, // 2MB
-  })
+  });
 
   const removeImage = (id) => {
-    setImages(prevImages => prevImages.filter(image => image.id !== id))
-  }
-
-  const simulateUpload = async (id) => {
-    for (let i = 0; i <= 100; i += 10) {
-      await new Promise(resolve => setTimeout(resolve, 200))
-      setImages(prevImages => 
-        prevImages.map(img => 
-          img.id === id ? { ...img, uploadProgress: i } : img
-        )
-      )
-    }
-    setImages(prevImages => 
-      prevImages.map(img => 
-        img.id === id ? { ...img, status: Math.random() > 0.2 ? 'uploaded' : 'error' } : img
-      )
-    )
-  }
+    setImages(prevImages => prevImages.filter(image => image.id !== id));
+  };
 
   const handleSubmit = async () => {
     if (images.length < 6) {
-      alert('Por favor, sube al menos 6 imágenes.')
-      return
+      alert('Por favor, sube al menos 6 imágenes.');
+      return;
     }
-    setIsProcessing(true)
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    setIsProcessing(false)
-    setImages([])
-  }
-
-  useEffect(() => {
-    images.forEach(image => {
-      if (image.status === 'uploading' && image.uploadProgress === 0) {
-        simulateUpload(image.id)
-      }
-    })
-  }, [images])
+    setIsProcessing(true);
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    setIsProcessing(false);
+    setImages([]);
+  };
 
   if (isProcessing) {
     return (
@@ -187,108 +190,92 @@ export default function ImageUpload() {
               Sube tus imágenes para entrenar el modelo y generar tus nuevas y divertidas fotos. Necesitamos un mínimo de 6 imágenes y un máximo de 10.
             </p>
 
-            <div
-              {...getRootProps()}
-              className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer ${
-                isDragActive ? 'border-purple-500 bg-purple-50' : 'border-gray-300'
-              }`}
-            >
+            <div 
+              {...getRootProps()} 
+              className={`w-full h-64 flex flex-col items-center justify-center border-2 border-dashed rounded-lg transition-colors ${
+                isDragActive ? 'border-purple-600 bg-purple-100' : 'border-purple-300 bg-purple-50'
+              }`}>
               <input {...getInputProps()} />
-              <Upload className="mx-auto h-12 w-12 text-purple-500 mb-4" />
-              <p className="text-lg text-purple-800">
-                {isDragActive
-                  ? 'Suelta las imágenes aquí'
-                  : 'Arrastra y suelta imágenes aquí, o haz clic para seleccionar'}
-              </p>
-              <p className="text-sm text-purple-600 mt-2">Mínimo 6 imágenes, máximo 10 imágenes, 2MB por imagen</p>
+              <Upload className="h-10 w-10 text-purple-500 mb-4" />
+              <p className="text-purple-600 text-lg">Arrastra y suelta tus imágenes aquí, o haz clic para seleccionarlas</p>
+              <p className="text-purple-500 text-sm">Hasta 10 imágenes. El tamaño máximo es de 2MB.</p>
             </div>
 
-            {images.length > 0 && (
-              <div className="mt-8">
-                <h3 className="text-xl font-bold text-purple-800 mb-4">Imágenes seleccionadas:</h3>
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
-                  {images.map((image) => (
-                    <div key={image.id} className="relative">
-                      <img
-                        src={image.preview}
-                        alt={`Uploaded ${image.file.name}`}
-                        className="w-full h-60 object-cover rounded-lg"
-                      />
-                      <button
-                        onClick={() => removeImage(image.id)}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                      {image.status === 'uploading' && (
-                        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1">
-                          <div className="flex items-center justify-between">
-                            <span>Subiendo: {image.uploadProgress}%</span>
-                            <div className="w-1/2 bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                              <div className="bg-blue-600 h-2.5 rounded-full" style={{width: `${image.uploadProgress}%`}}></div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      {image.status === 'uploaded' && (
-                        <div className="absolute bottom-0 left-0 right-0 bg-green-500 bg-opacity-50 text-white text-xs p-1">
-                          Subida completada
-                        </div>
-                      )}
-                      {image.status === 'error' && (
-                        <div className="absolute bottom-0 left-0 right-0 bg-red-500 bg-opacity-50 text-white text-xs p-1 flex items-center justify-center">
-                          <AlertCircle className="h-4 w-4 mr-1" />
-                          Error al subir
-                        </div>
-                      )}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
+              {images.map(image => (
+                <div key={image.id} className="relative group">
+                  <img
+                    src={image.preview}
+                    alt="Preview"
+                    className="w-full h-48 object-cover rounded-lg shadow-md"
+                  />
+                  {image.status === 'uploading' && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                      <div className="bg-white rounded-full p-2">
+                        <span className="text-purple-500 font-bold">
+                          {image.uploadProgress}%
+                        </span>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="mt-12">
-              <h3 className="text-xl font-bold text-purple-800 mb-4">Selecciona una temática:</h3>
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 gap-4">
-                {themes.map((theme) => (
-                  <div
-                    key={theme.id}
-                    onClick={() => setSelectedTheme(theme.name)}
-                    className={`cursor-pointer border-2 rounded-lg p-2 transition-all duration-300 transform ${
-                      selectedTheme === theme.name
-                        ? 'border-purple-500 bg-purple-100 scale-105 shadow-lg'
-                        : 'border-gray-300 bg-white scale-100'
-                    }`}
+                  )}
+                  {image.status === 'error' && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-red-500/75">
+                      <AlertCircle className="h-10 w-10 text-white" />
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => removeImage(image.id)}
+                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                   >
-                    <img src={theme.image} alt={theme.name} className="w-full h-70 object-cover rounded mb-2" />
-                    <p className="text-center text-sm">{theme.name}</p>
-                  </div>
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6">
+              <h2 className="text-2xl font-bold text-purple-800 mb-4">Elige un tema</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {themes.map(theme => (
+                  <button
+                    key={theme.id}
+                    type="button"
+                    onClick={() => setSelectedTheme(theme.name)}
+                    className={`p-4 bg-white border-2 ${
+                      selectedTheme === theme.name ? 'border-purple-600' : 'border-transparent'
+                    } rounded-lg shadow-md text-purple-600 text-center transition-all hover:shadow-lg`}
+                  >
+                    <img
+                      src={theme.image}
+                      alt={theme.name}
+                      className="w-full h-32 object-cover rounded-lg mb-2"
+                    />
+                    <span className="font-semibold">{theme.name}</span>
+                  </button>
                 ))}
               </div>
+
+              <div className="mt-4">
+                <input
+                  type="text"
+                  value={customTheme}
+                  onChange={e => setCustomTheme(e.target.value)}
+                  className="w-full px-4 py-2 rounded-lg shadow-md border-2 border-purple-300 focus:outline-none focus:border-purple-500"
+                  placeholder="Escribe tu propio tema personalizado"
+                />
+              </div>
             </div>
 
-            <div className="mt-8">
-              <label htmlFor="customTheme" className="block text-sm font-medium text-purple-700 mb-2">
-                O describe tu propia temática:
-              </label>
-              <input
-                type="text"
-                id="customTheme"
-                value={customTheme}
-                onChange={(e) => setCustomTheme(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                placeholder="Describe tu temática personalizada aquí"
-              />
+            <div className="mt-6">
+              <button
+                onClick={handleSubmit}
+                disabled={images.length < 6 || isProcessing}
+                className="w-full py-3 px-4 bg-purple-600 text-white font-semibold rounded-lg shadow-md disabled:bg-purple-400 disabled:cursor-not-allowed"
+              >
+                {isProcessing ? 'Procesando...' : 'Enviar imágenes'}
+              </button>
             </div>
-
-            <button
-              onClick={handleSubmit}
-              disabled={images.length < 6 || images.length > 10 || (!selectedTheme && !customTheme)}
-              className="mt-8 bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 flex items-center justify-center gap-2 text-xl px-6 py-3 rounded-full w-full disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 ease-in-out transform hover:scale-105"
-            >
-              <Send className="h-6 w-6" />
-              Enviar Imágenes
-            </button>
           </div>
         </main>
       </div>

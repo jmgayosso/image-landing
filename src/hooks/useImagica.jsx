@@ -13,8 +13,32 @@ export default function useImagica() {
             throw error;
         }
     }
+    async function uploadImage({ image, token }) {
+        try {
+            console.log('Enviando imagen...', { token, image });
+
+            // Crear un objeto FormData para manejar multipart/form-data
+            const formData = new FormData();
+            formData.append('token', token);  // Añade el token
+            formData.append('photo', image);  // Añade la imagen
+    
+            // Realizar la petición
+            const response = await axios.post(`${API}/upload`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data', // Establecer el tipo de contenido
+                },
+            });
+            
+            return response.data;
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            throw error;
+        }
+    }
+    
 
     return {
-        validateToken
+        validateToken,
+        uploadImage
     }
 }
