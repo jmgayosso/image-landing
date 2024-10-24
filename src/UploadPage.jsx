@@ -5,7 +5,9 @@ import { useDropzone } from 'react-dropzone'
 import { X, Upload, Camera, AlertCircle, CheckCircle } from 'lucide-react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import Lottie from 'lottie-react'
-import loadingAnimation from './assets/animations/Animation - 1729664229969.json'
+import loadingAnimation from './assets/animations/Animation - loading.json'
+import uploadingAnimation from './assets/animations/Animation - uploading files.json'
+import successAnimation from './assets/animations/Animation - success.json'
 import useImagica from './hooks/useImagica'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -34,15 +36,16 @@ const themes = [
   { id: 7, name: 'Soldado Romano', image: ejemplo7 },
 ];
 
-
 export default function ImageUpload() {
   const [images, setImages] = useState([])
-  const [isProcessing, setIsProcessing] = useState(false)
+  const [orderStatus, setOrderStatus] = useState('loading')
   const [selectedTheme, setSelectedTheme] = useState('')
   const [customTheme, setCustomTheme] = useState('')
   const [imagicaData, setImagicaData] = useState()
   const [isLoading, setIsLoading] = useState(true)
   const [imagicaError, setImagicaError] = useState()
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
 
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token')
@@ -50,8 +53,8 @@ export default function ImageUpload() {
 
   const { validateToken, uploadImage, getUploadedPhotos, deletePhoto } = useImagica()
 
-  const isButtonDisabled = images.length < 6 || isProcessing || !selectedTheme;
-
+  const isButtonDisabled = images.length < 6 || orderStatus != 'pending' || (!selectedTheme && !customTheme);
+  const finalTopic = selectedTheme || customTheme
 
   async function fetchPhotosByToken(token) {
     try {
@@ -99,40 +102,35 @@ export default function ImageUpload() {
     }
   }, [token, navigate])
 
-
- const handleImageUpload = useCallback(
-  async (image) => {
-    try {
-      // Attempt to upload the image
-      const { message, photoId } = await uploadImage({ image: image.file, token });
-
-      // Update the image state with the new photoId and status
-      setImages((prevImages) =>
-        prevImages.map((img) =>
-          img.id === image.id ? { ...img, status: 'uploaded', uploadProgress: 100, photoId } : img
-        )
-      );
-
-      // Show a success toast notification
-      toast.success(`Imagen ${image.file.name} subida con éxito!`);
-    } catch (error) {
-      // Update the image state to indicate an error occurred
-      setImages((prevImages) =>
-        prevImages.map((img) => (img.id === image.id ? { ...img, status: 'error' } : img))
-      );
-
-      // Extract the error message for display
-      const errorMessage =
-        error.response?.data?.details || error.response?.data?.error || error.message || error;
-      
-      // Show an error toast notification
-      toast.error(`Error al subir la imagen ${image.file.name}: ${errorMessage}`);
-      console.error('Error al subir la imagen:', error);
+  useEffect(() => {
+    if (imagicaData) {
+      console.log(imagicaData)
+      setOrderStatus(imagicaData.upload_info.upload_status)
     }
-  },
-  [uploadImage, token] // Ensure token is included in the dependency array if it's used in uploadImage
-);
+  }, [imagicaData])
 
+  const handleImageUpload = useCallback(
+    async (image) => {
+      try {
+        const { photoId } = await uploadImage({ image: image.file, token });
+        setImages((prevImages) =>
+          prevImages.map((img) =>
+            img.id === image.id ? { ...img, status: 'uploaded', uploadProgress: 100, photoId } : img
+          )
+        );
+        toast.success(`Imagen ${image.file.name} subida con éxito!`);
+      } catch (error) {
+        setImages((prevImages) =>
+          prevImages.map((img) => (img.id === image.id ? { ...img, status: 'error' } : img))
+        );
+        const errorMessage =
+          error.response?.data?.details || error.response?.data?.error || error.message || error;
+        toast.error(`Error al subir la imagen ${image.file.name}: ${errorMessage}`);
+        console.error('Error al subir la imagen:', error);
+      }
+    },
+    [uploadImage, token]
+  );
 
   useEffect(() => {
     images.forEach((image) => {
@@ -142,7 +140,15 @@ export default function ImageUpload() {
     })
   }, [images, handleImageUpload])
 
-  const onDrop = useCallback((acceptedFiles) => {
+  const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
+    rejectedFiles.forEach((file) => {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error(`${file.file.name} es demasiado grande. El tamaño máximo es 5MB.`);
+      } else {
+        toast.error(`${file.file.name} no es un tipo de archivo permitido.`);
+      }
+    });
+
     const newImages = acceptedFiles.map((file) => ({
       file,
       preview: URL.createObjectURL(file),
@@ -157,13 +163,14 @@ export default function ImageUpload() {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: { 'image/*': [] },
-    maxSize: 2 * 1024 * 1024,
+    maxSize: 5 * 1024 * 1024,
   })
 
   const removeImage = async (id) => {
     try {
+      const { photoId } = images.find((img) => img.id === id)
       setIsLoading(true)
-      await deletePhoto(token, id)
+      await deletePhoto(token, photoId)
       setImages((prevImages) => prevImages.filter((image) => image.id !== id))
       toast.success('Imagen eliminada con exito!');
     } catch (error) {
@@ -172,7 +179,6 @@ export default function ImageUpload() {
     } finally {
       setIsLoading(false)
     }
-    
   }
 
   const retryUpload = (image) => {
@@ -188,15 +194,20 @@ export default function ImageUpload() {
       toast.error('Por favor, sube al menos 6 imágenes.')
       return
     }
-    setIsProcessing(true)
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    setIsProcessing(false)
-    setImages([])
+    setShowConfirmModal(true)
   }
 
-  if (isProcessing) {
+  const confirmSubmit = async () => {
+    setIsLoading(true)
+    setShowConfirmModal(false)
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+    setShowSuccessModal(true)
+    setIsLoading(false)
+  }
+
+  if (orderStatus === 'complete') {
     return (
-      <div className="flex flex-col min-h-[100dvh] bg-gradient-to-b from-yellow-100 via-orange-200 to-pink-200 font-sans">
+      <div className="flex flex-col min-h-screen bg-gradient-to-b from-yellow-100 via-orange-200 to-pink-200 font-sans">
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-purple-800 mb-4">Procesando tus fotos</h2>
@@ -209,7 +220,7 @@ export default function ImageUpload() {
 
   if (imagicaError) {
     return (
-      <div className="flex flex-col min-h-[100dvh] bg-gradient-to-b from-yellow-100 via-orange-200 to-pink-200 font-sans">
+      <div className="flex flex-col min-h-screen bg-gradient-to-b from-yellow-100 via-orange-200 to-pink-200 font-sans">
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-purple-800 mb-4">Error al validar tu token</h2>
@@ -234,7 +245,7 @@ export default function ImageUpload() {
           </div>
         </div>
       )}
-      <div className="flex flex-col min-h-[100dvh] bg-gradient-to-b from-yellow-100 via-orange-200 to-pink-200 font-sans">
+      <div className="flex flex-col min-h-screen bg-gradient-to-b from-yellow-100 via-orange-200 to-pink-200 font-sans">
         <header className="px-4 lg:px-6 h-14 flex items-center bg-gradient-to-r from-orange-400 to-pink-400">
           <a className="flex items-center justify-center" href="#">
             <Camera className="h-6 w-6 text-yellow-200" />
@@ -266,7 +277,7 @@ export default function ImageUpload() {
               <p className="text-purple-600 text-lg">
                 Arrastra y suelta tus imágenes aquí, o haz clic para seleccionarlas
               </p>
-              <p className="text-purple-500 text-sm">Hasta 10 imágenes. El tamaño máximo es de 2MB.</p>
+              <p className="text-purple-500 text-sm">Hasta 10 imágenes. El tamaño máximo es de 5MB por imagen.</p>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-4 mt-6">
@@ -277,6 +288,11 @@ export default function ImageUpload() {
                     alt="Preview"
                     className="w-full h-60 object-cover rounded-lg shadow-md transition-transform transform group-hover:scale-105"
                   />
+                  {(image.status === 'uploading' || image.status === 'loading') && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 rounded-lg">
+                      <Lottie animationData={uploadingAnimation} loop autoplay style={{ width: 80, height: 80 }} />
+                    </div>
+                  )}
                   {image.status === 'uploading' && (
                     <div className="absolute inset-x-0 bottom-0 h-2 bg-gray-200 rounded-b-lg overflow-hidden">
                       <div
@@ -313,7 +329,7 @@ export default function ImageUpload() {
               ))}
             </div>
 
-            <div className="mt-10">
+            <div  className="mt-10">
               <h2 className="text-2xl font-bold text-purple-800 mb-4">Eliga una tematica para generar sus nuevas fotos.</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {themes.map((theme) => (
@@ -350,7 +366,7 @@ export default function ImageUpload() {
               </div>
             </div>
 
-            <div className="mt-6 relative group"> {/* Added 'group' class for hover effects */}
+            <div className="mt-6 relative group">
               <button
                 onClick={handleSubmit}
                 disabled={isButtonDisabled}
@@ -358,10 +374,9 @@ export default function ImageUpload() {
                   ${isButtonDisabled ? 'bg-purple-400 cursor-not-allowed' : 'hover:bg-purple-700'}
                   transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50`}
               >
-                {isProcessing ? 'Procesando...' : 'Enviar imágenes'}
+                {orderStatus !== 'pending' ? orderStatus : 'Enviar imágenes'}
               </button>
 
-              {/* Tooltip for disabled state */}
               {isButtonDisabled && (
                 <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-full mb-2 p-2 bg-gray-800 text-white text-sm rounded-md opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100">
                   Suba al menos 6 imágenes y selecciona una temática.
@@ -371,6 +386,52 @@ export default function ImageUpload() {
           </div>
         </main>
       </div>
+
+      {showConfirmModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+            <h3 className="text-lg font-semibold mb-4">Confirmar envío de imágenes</h3>
+            <p className="mb-4">Estás a punto de enviar <span className="font-semibold">{images.length}</span> imágenes con la temática: <span className="font-semibold">{finalTopic}</span></p>
+            <p className="mb-6">¿Estás seguro de que deseas continuar?</p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
+              >
+                Regresar
+              </button>
+              <button
+                onClick={confirmSubmit}
+                className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full text-center">
+            <h3 className="text-lg font-semibold mb-4">¡Imágenes enviadas con éxito!</h3>
+            <div className="mb-6">
+              <Lottie animationData={successAnimation} loop={false} style={{ width: 200, height: 200, margin: '0 auto' }} />
+            </div>
+            <p className="mb-6">Tus nuevas fotos serán enviadas a tu correo electrónico pronto ({ imagicaData.upload_info.user.email }).</p>
+            <button
+              onClick={() => {
+                setShowSuccessModal(false)
+                setImages([])
+              }}
+              className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
+            >
+              Enterado
+            </button>
+          </div>
+        </div>
+      )}
+
       <style jsx global>{`
         .scale-120 {
           transform: scale(0.9);
