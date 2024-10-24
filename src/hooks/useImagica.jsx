@@ -88,10 +88,24 @@ export default function useImagica() {
         }
     }
 
+    async function sendPhotosAndTopic(token, photos) {
+        try {
+            const response = await axios.post(`${API}/send-photos-and-tematica`, {
+                token,
+                photos
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error sending photos and tematica:', error);
+            throw error;
+        }
+    }
+
     return {
         validateToken,
         uploadImage,
         getUploadedPhotos,
-        deletePhoto
+        deletePhoto,
+        sendPhotosAndTopic
     }
 }
