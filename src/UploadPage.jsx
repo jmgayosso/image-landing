@@ -51,7 +51,7 @@ export default function ImageUpload() {
   const token = searchParams.get('token')
   const navigate = useNavigate()
 
-  const { validateToken, uploadImage, getUploadedPhotos, deletePhoto } = useImagica()
+  const { validateToken, uploadImage, getUploadedPhotos, deletePhoto, completeUpload } = useImagica()
 
   const isButtonDisabled = images.length < 6 || orderStatus != 'pending' || (!selectedTheme && !customTheme);
   const finalTopic = selectedTheme || customTheme
@@ -88,6 +88,11 @@ export default function ImageUpload() {
           await fetchPhotosByToken(token)
         }
       } catch (error) {
+        const errorMessage = error.response.data.error || error.response.data.details || error.message || error
+        if (errorMessage === 'Token has already been used') {
+          setOrderStatus('completed')
+          return
+        }
         setImagicaError(error.response)
         console.error('Error fetching Imagica data:', error)
       } finally {
@@ -198,25 +203,39 @@ export default function ImageUpload() {
   }
 
   const confirmSubmit = async () => {
-    setIsLoading(true)
-    setShowConfirmModal(false)
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    setShowSuccessModal(true)
-    setIsLoading(false)
+    try {
+      setIsLoading(true)
+      setShowConfirmModal(false)
+      await completeUpload(token, finalTopic)
+      setShowSuccessModal(true)
+    } catch (e) {
+      console.error('Error al completar el proceso de subida:', e)
+      const errorMessage = e.response?.data?.details || e.response?.data?.message || e.response?.data?.error || e.message || e
+      toast.error(errorMessage)
+    } finally {
+      setIsLoading(false)
+    }
+
   }
 
-  if (orderStatus === 'complete') {
+  if (orderStatus === 'completed') {
     return (
       <div className="flex flex-col min-h-screen bg-gradient-to-b from-yellow-100 via-orange-200 to-pink-200 font-sans">
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-purple-800 mb-4">Procesando tus fotos</h2>
-            <p className="text-xl text-purple-600">Pronto las recibirás por correo electrónico</p>
+            <h2 className="text-3xl font-bold text-purple-800 mb-4">Tus nuevas y divertidas fotos están en proceso</h2>
+            <p className="text-xl text-purple-600 mb-4">
+              Hemos recibido tus fotos y el equipo de Imagica está trabajando en ellas. Pronto las recibirás en tu correo electrónico.
+            </p>
+            <p className="text-lg text-purple-500">
+              Si necesitas ayuda o tienes alguna pregunta, no dudes en contactarnos en <a href="mailto:soporte@imagica.com" className="underline">soporte@imagica.com</a>.
+            </p>
           </div>
         </main>
       </div>
-    )
+    );
   }
+  
 
   if (imagicaError) {
     return (
@@ -421,8 +440,10 @@ export default function ImageUpload() {
             <p className="mb-6">Tus nuevas fotos serán enviadas a tu correo electrónico pronto ({ imagicaData.upload_info.user.email }).</p>
             <button
               onClick={() => {
-                setShowSuccessModal(false)
-                setImages([])
+                // setShowSuccessModal(false)
+                // setImages([])
+                // reload page
+                window.location.reload()
               }}
               className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
             >

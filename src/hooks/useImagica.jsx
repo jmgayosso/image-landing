@@ -88,15 +88,15 @@ export default function useImagica() {
         }
     }
 
-    async function sendPhotosAndTopic(token, photos) {
+    async function completeUpload(token, topic) {
         try {
-            const response = await axios.post(`${API}/send-photos-and-tematica`, {
+            const response = await axios.post(`${API}/complete-upload`, {
                 token,
-                photos
+                topic
             });
             return response.data;
         } catch (error) {
-            console.error('Error sending photos and tematica:', error);
+            console.error('Error sending photos and topic:', error);
             throw error;
         }
     }
@@ -106,6 +106,6 @@ export default function useImagica() {
         uploadImage,
         getUploadedPhotos,
         deletePhoto,
-        sendPhotosAndTopic
+        completeUpload
     }
 }
