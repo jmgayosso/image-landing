@@ -274,7 +274,7 @@ export default function ImageUpload() {
         <main className="flex-1 container mx-auto px-4 py-8">
           <div className="bg-white rounded-lg shadow-lg p-6">
             <h1 className="text-3xl font-bold text-purple-800 mb-4">
-              ¡Bienvenido, {imagicaData?.upload_info?.user?.name}!
+              ¡Bienvenid@, {imagicaData?.upload_info?.user?.name}!
             </h1>
             <p className="text-lg text-purple-600 mb-6">
               Este es tu enlace personal para subir imágenes. Por favor, no compartas este enlace
