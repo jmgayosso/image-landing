@@ -11,18 +11,29 @@ import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { motion } from 'framer-motion'
 
-// Simulated themes for image generation
+import ejemplo1 from './assets/ejemplo1.jpg';
+import ejemplo2 from './assets/ejemplo2.jpg';
+import ejemplo3 from './assets/ejemplo3.jpg';
+import ejemplo4 from './assets/ejemplo4.jpg';
+import ejemplo5 from './assets/ejemplo5.jpg';
+import ejemplo6 from './assets/ejemplo6.jpg';
+import ejemplo7 from './assets/ejemplo7.jpg';
+import idea8 from './assets/idea8.jpg';
+import idea9 from './assets/idea9.jpg';
+import idea10 from './assets/idea10.jpg';
+
 const themes = [
-  { id: 1, name: 'Magnate', image: '/placeholder.svg?height=200&width=200' },
-  { id: 10, name: 'Fiester', image: '/placeholder.svg?height=200&width=200' },
-  { id: 3, name: 'Jinete', image: '/placeholder.svg?height=200&width=200' },
-  { id: 2, name: 'Princesa', image: '/placeholder.svg?height=200&width=200' },
-  { id: 9, name: 'Sireno', image: '/placeholder.svg?height=200&width=200' },
-  { id: 5, name: 'Dios Griego', image: '/placeholder.svg?height=200&width=200' },
-  { id: 6, name: 'Telettubbie', image: '/placeholder.svg?height=200&width=200' },
-  { id: 8, name: 'Terminator', image: '/placeholder.svg?height=200&width=200' },
-  { id: 7, name: 'Soldado Romano', image: '/placeholder.svg?height=200&width=200' },
-]
+  { id: 1, name: 'Magnate', image: ejemplo1 },
+  { id: 10, name: 'Fiester', image: idea10 },
+  { id: 3, name: 'Jinete', image: ejemplo3 },
+  { id: 2, name: 'Princesa', image: ejemplo2 },
+  { id: 9, name: 'Sireno', image: idea9 },
+  { id: 5, name: 'Dios Griego', image: ejemplo5 },
+  { id: 6, name: 'Telettubbie', image: ejemplo6 },
+  { id: 8, name: 'Terminator', image: idea8 },
+  { id: 7, name: 'Soldado Romano', image: ejemplo7 },
+];
+
 
 export default function ImageUpload() {
   const [images, setImages] = useState([])
@@ -37,7 +48,7 @@ export default function ImageUpload() {
   const token = searchParams.get('token')
   const navigate = useNavigate()
 
-  const { validateToken, uploadImage, getUploadedPhotos } = useImagica()
+  const { validateToken, uploadImage, getUploadedPhotos, deletePhoto } = useImagica()
 
   async function fetchPhotosByToken(token) {
     try {
@@ -45,6 +56,7 @@ export default function ImageUpload() {
       console.log('Fetched uploaded photos:', response.photos)
       const uploadedPhotos = response.photos.map((photo) => ({
         id: photo.id,
+        photoId: photo.id,
         file: null,
         preview: photo.file_url,
         uploadProgress: 100,
@@ -86,32 +98,40 @@ export default function ImageUpload() {
     }
   }, [token, navigate])
 
-  
-  const handleImageUpload = useCallback(
-    async (image) => {
-      try {
-        const { message, photoId } = await uploadImage({ image: image.file, token })
 
-        //TODO set the new photoId instead to the object
+ const handleImageUpload = useCallback(
+  async (image) => {
+    try {
+      // Attempt to upload the image
+      const { message, photoId } = await uploadImage({ image: image.file, token });
 
-        setImages((prevImages) =>
-          prevImages.map((img) =>
-            img.id === image.id ? { ...img, status: 'uploaded', uploadProgress: 100 } : img
-          )
+      // Update the image state with the new photoId and status
+      setImages((prevImages) =>
+        prevImages.map((img) =>
+          img.id === image.id ? { ...img, status: 'uploaded', uploadProgress: 100, photoId } : img
         )
-        toast.success(`Imagen ${image.file.name} subida con éxito!`)
-      } catch (error) {
-        setImages((prevImages) =>
-          prevImages.map((img) => (img.id === image.id ? { ...img, status: 'error' } : img))
-        )
-        const errorMessage =
-          error.response?.data?.details || error.response?.data?.error || error.message || error
-        toast.error(`Error al subir la imagen ${image.file.name}: ${errorMessage}`)
-        console.error('Error al subir la imagen:', error)
-      }
-    },
-    [uploadImage]
-  )
+      );
+
+      // Show a success toast notification
+      toast.success(`Imagen ${image.file.name} subida con éxito!`);
+    } catch (error) {
+      // Update the image state to indicate an error occurred
+      setImages((prevImages) =>
+        prevImages.map((img) => (img.id === image.id ? { ...img, status: 'error' } : img))
+      );
+
+      // Extract the error message for display
+      const errorMessage =
+        error.response?.data?.details || error.response?.data?.error || error.message || error;
+      
+      // Show an error toast notification
+      toast.error(`Error al subir la imagen ${image.file.name}: ${errorMessage}`);
+      console.error('Error al subir la imagen:', error);
+    }
+  },
+  [uploadImage, token] // Ensure token is included in the dependency array if it's used in uploadImage
+);
+
 
   useEffect(() => {
     images.forEach((image) => {
@@ -139,8 +159,19 @@ export default function ImageUpload() {
     maxSize: 2 * 1024 * 1024,
   })
 
-  const removeImage = (id) => {
-    setImages((prevImages) => prevImages.filter((image) => image.id !== id))
+  const removeImage = async (id) => {
+    try {
+      setIsLoading(true)
+      await deletePhoto(token, id)
+      setImages((prevImages) => prevImages.filter((image) => image.id !== id))
+      toast.success('Imagen eliminada con exito!');
+    } catch (error) {
+      const errorMessage = error.response?.data?.details || error.response?.data?.error || error.message || error;
+      toast.error(`Error al borrar la imagen: ${errorMessage}`);
+    } finally {
+      setIsLoading(false)
+    }
+    
   }
 
   const retryUpload = (image) => {
@@ -237,13 +268,13 @@ export default function ImageUpload() {
               <p className="text-purple-500 text-sm">Hasta 10 imágenes. El tamaño máximo es de 2MB.</p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-6">
               {images.map((image) => (
                 <div key={image.id} className={`relative group ${image.status === 'uploading' ? 'ring-4 ring-purple-300 rounded-lg' : ''}`}>
                   <img
                     src={image.preview}
                     alt="Preview"
-                    className="w-full h-48 object-cover rounded-lg shadow-md transition-transform transform group-hover:scale-105"
+                    className="w-full h-60 object-cover rounded-lg shadow-md transition-transform transform group-hover:scale-105"
                   />
                   {image.status === 'uploading' && (
                     <div className="absolute inset-x-0 bottom-0 h-2 bg-gray-200 rounded-b-lg overflow-hidden">
@@ -283,7 +314,7 @@ export default function ImageUpload() {
 
             <div className="mt-6">
               <h2 className="text-2xl font-bold text-purple-800 mb-4">Elige un tema</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {themes.map((theme) => (
                   <motion.button
                     key={theme.id}
@@ -300,7 +331,7 @@ export default function ImageUpload() {
                     <img
                       src={theme.image}
                       alt={theme.name}
-                      className="w-full h-32 object-cover rounded-lg mb-2"
+                      className="w-full h-60 object-cover rounded-lg mb-2"
                     />
                     <span className="font-semibold">{theme.name}</span>
                   </motion.button>
