@@ -24,10 +24,10 @@ import idea10 from './assets/idea10.jpg';
 
 const themes = [
   { id: 1, name: 'Magnate', image: ejemplo1 },
-  { id: 10, name: 'Fiester', image: idea10 },
+  { id: 10, name: 'Fiester@', image: idea10 },
   { id: 3, name: 'Jinete', image: ejemplo3 },
   { id: 2, name: 'Princesa', image: ejemplo2 },
-  { id: 9, name: 'Sireno', image: idea9 },
+  { id: 9, name: 'Siren@', image: idea9 },
   { id: 5, name: 'Dios Griego', image: ejemplo5 },
   { id: 6, name: 'Telettubbie', image: ejemplo6 },
   { id: 8, name: 'Terminator', image: idea8 },
@@ -50,10 +50,12 @@ export default function ImageUpload() {
 
   const { validateToken, uploadImage, getUploadedPhotos, deletePhoto } = useImagica()
 
+  const isButtonDisabled = images.length < 6 || isProcessing || !selectedTheme;
+
+
   async function fetchPhotosByToken(token) {
     try {
       const response = await getUploadedPhotos(token)
-      console.log('Fetched uploaded photos:', response.photos)
       const uploadedPhotos = response.photos.map((photo) => ({
         id: photo.id,
         photoId: photo.id,
@@ -69,7 +71,6 @@ export default function ImageUpload() {
   }
 
   useEffect(() => {
-    console.log('Mounted Page:', token)
     if (!token) {
       navigate('/')
     }
@@ -268,7 +269,7 @@ export default function ImageUpload() {
               <p className="text-purple-500 text-sm">Hasta 10 imágenes. El tamaño máximo es de 2MB.</p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-6">
+            <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-4 mt-6">
               {images.map((image) => (
                 <div key={image.id} className={`relative group ${image.status === 'uploading' ? 'ring-4 ring-purple-300 rounded-lg' : ''}`}>
                   <img
@@ -312,8 +313,8 @@ export default function ImageUpload() {
               ))}
             </div>
 
-            <div className="mt-6">
-              <h2 className="text-2xl font-bold text-purple-800 mb-4">Elige un tema</h2>
+            <div className="mt-10">
+              <h2 className="text-2xl font-bold text-purple-800 mb-4">Eliga una tematica para generar sus nuevas fotos.</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {themes.map((theme) => (
                   <motion.button
@@ -344,19 +345,28 @@ export default function ImageUpload() {
                   value={customTheme}
                   onChange={(e) => setCustomTheme(e.target.value)}
                   className="w-full px-4 py-2 rounded-lg shadow-md border-2 border-purple-300 focus:outline-none focus:border-purple-500 transition-colors"
-                  placeholder="Escribe tu propio tema personalizado"
+                  placeholder="Escriba su propia tematica personalizada."
                 />
               </div>
             </div>
 
-            <div className="mt-6">
+            <div className="mt-6 relative group"> {/* Added 'group' class for hover effects */}
               <button
                 onClick={handleSubmit}
-                disabled={images.length < 6 || isProcessing}
-                className="w-full py-3 px-4 bg-purple-600 text-white font-semibold rounded-lg shadow-md disabled:bg-purple-400 disabled:cursor-not-allowed transition-colors hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
+                disabled={isButtonDisabled}
+                className={`w-full py-3 px-4 bg-purple-600 text-white font-semibold rounded-lg shadow-md 
+                  ${isButtonDisabled ? 'bg-purple-400 cursor-not-allowed' : 'hover:bg-purple-700'}
+                  transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50`}
               >
                 {isProcessing ? 'Procesando...' : 'Enviar imágenes'}
               </button>
+
+              {/* Tooltip for disabled state */}
+              {isButtonDisabled && (
+                <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-full mb-2 p-2 bg-gray-800 text-white text-sm rounded-md opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100">
+                  Suba al menos 6 imágenes y selecciona una temática.
+                </div>
+              )}
             </div>
           </div>
         </main>
