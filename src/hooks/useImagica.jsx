@@ -2,7 +2,7 @@ import axios from "axios";
 
 export default function useImagica() {
     const API = import.meta.env.VITE_IMAGICA_API;
-    
+
     /**
      * Validate a token with the Imagica API.
      * 
@@ -78,9 +78,20 @@ export default function useImagica() {
         }
     }
 
+    async function deletePhoto(token, photoId) {
+        try {
+            const response = await axios.delete(`${API}/delete-photo/${photoId}?token=${token}`);
+            return response.data;
+        } catch (error) {
+            console.error('Error deleting photo:', error);
+            throw error;
+        }
+    }
+
     return {
         validateToken,
         uploadImage,
-        getUploadedPhotos
+        getUploadedPhotos,
+        deletePhoto
     }
 }
