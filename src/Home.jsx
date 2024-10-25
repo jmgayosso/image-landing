@@ -49,7 +49,7 @@ export default function Component() {
             <div className="flex flex-col items-center space-y-10 text-center">
               <div className="space-y-2">
                 <h1 className="tracking-cnormal text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-yellow-300 drop-shadow-lg mb-8">
-                  Transforma tus Selfies en Magia
+                  Transforma tus Selfies en Magia lol
                   
                       {/* <Lottie 
                       options={{
