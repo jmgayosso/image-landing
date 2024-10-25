@@ -1,4 +1,3 @@
-'use client'
 
 import React, { useState, useCallback, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
@@ -37,101 +36,106 @@ const themes = [
 ];
 
 export default function ImageUpload() {
-  const [images, setImages] = useState([])
-  const [orderStatus, setOrderStatus] = useState('loading')
-  const [selectedTheme, setSelectedTheme] = useState('')
-  const [customTheme, setCustomTheme] = useState('')
-  const [imagicaData, setImagicaData] = useState()
-  const [isLoading, setIsLoading] = useState(true)
-  const [imagicaError, setImagicaError] = useState()
-  const [showConfirmModal, setShowConfirmModal] = useState(false)
-  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [images, setImages] = useState([]);
+  const [orderStatus, setOrderStatus] = useState('loading');
+  const [selectedTheme, setSelectedTheme] = useState('');
+  const [customTheme, setCustomTheme] = useState('');
+  const [imagicaData, setImagicaData] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+  const [imagicaError, setImagicaError] = useState();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [uploadingImages, setUploadingImages] = useState(new Set());
 
-  const [searchParams] = useSearchParams()
-  const token = searchParams.get('token')
-  const navigate = useNavigate()
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token');
+  const navigate = useNavigate();
 
-  const { validateToken, uploadImage, getUploadedPhotos, deletePhoto, completeUpload } = useImagica()
+  const { validateToken, uploadImage, getUploadedPhotos, deletePhoto, completeUpload } = useImagica();
 
-  const isButtonDisabled = images.length < 6 || orderStatus != 'pending' || (!selectedTheme && !customTheme);
-  const finalTopic = selectedTheme || customTheme
+  const isButtonDisabled = images.length < 6 || orderStatus !== 'pending' || (!selectedTheme && !customTheme);
+  const finalTopic = selectedTheme || customTheme;
 
   async function fetchPhotosByToken(token) {
     try {
-      const response = await getUploadedPhotos(token)
-      const uploadedPhotos = response.photos.map((photo) => ({
+      const response = await getUploadedPhotos(token);
+      const uploadedPhotos = response.photos.map(photo => ({
         id: photo.id,
         photoId: photo.id,
         file: null,
         preview: photo.file_url,
         uploadProgress: 100,
         status: 'uploaded',
-      }))
-      setImages((prevImages) => [...uploadedPhotos, ...prevImages])
+      }));
+      setImages(prevImages => [...uploadedPhotos, ...prevImages]);
     } catch (error) {
-      console.error('Error fetching uploaded photos:', error)
+      console.error('Error fetching uploaded photos:', error);
     }
   }
 
   useEffect(() => {
     if (!token) {
-      navigate('/')
+      navigate('/');
     }
-    let isMounted = true
+    let isMounted = true;
 
     const fetchImagicaData = async () => {
       try {
-        setIsLoading(true)
-        const data = await validateToken(token)
-        setImagicaData(data)
+        setIsLoading(true);
+        const data = await validateToken(token);
+        setImagicaData(data);
         if (isMounted) {
-          await fetchPhotosByToken(token)
+          await fetchPhotosByToken(token);
         }
       } catch (error) {
-        const errorMessage = error.response.data.error || error.response.data.details || error.message || error
+        const errorMessage = error.response?.data?.error || error.response?.data?.details || error.message || error;
         if (errorMessage === 'Token has already been used') {
-          setOrderStatus('completed')
-          return
+          setOrderStatus('completed');
+          return;
         }
-        setImagicaError(error.response)
-        console.error('Error fetching Imagica data:', error)
+        setImagicaError(error.response);
+        console.error('Error fetching Imagica data:', error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
 
-    fetchImagicaData()
+    fetchImagicaData();
 
     return () => {
-      isMounted = false
-    }
-  }, [token, navigate])
+      isMounted = false;
+    };
+  }, [token, navigate]);
 
   useEffect(() => {
     if (imagicaData) {
-      console.log(imagicaData)
-      setOrderStatus(imagicaData.upload_info.upload_status)
+      console.log(imagicaData);
+      setOrderStatus(imagicaData.upload_info.upload_status);
     }
-  }, [imagicaData])
+  }, [imagicaData]);
 
   const handleImageUpload = useCallback(
     async (image) => {
+      if (uploadingImages.has(image.id)) {
+        return; // Already uploading
+      }
+      uploadingImages.add(image.id); // Add to uploading set
+
       try {
         const { photoId } = await uploadImage({ image: image.file, token });
         setImages((prevImages) =>
-          prevImages.map((img) =>
-            img.id === image.id ? { ...img, status: 'uploaded', uploadProgress: 100, photoId } : img
-          )
+          prevImages.map((img) => (img.id === image.id ? { ...img, status: 'uploaded', uploadProgress: 100, photoId } : img))
         );
         toast.success(`Imagen ${image.file.name} subida con éxito!`);
       } catch (error) {
         setImages((prevImages) =>
           prevImages.map((img) => (img.id === image.id ? { ...img, status: 'error' } : img))
         );
-        const errorMessage =
-          error.response?.data?.details || error.response?.data?.error || error.message || error;
+        const errorMessage = error.response?.data?.details || error.response?.data?.error || error.message || error;
         toast.error(`Error al subir la imagen ${image.file.name}: ${errorMessage}`);
         console.error('Error al subir la imagen:', error);
+      } finally {
+        uploadingImages.delete(image.id); // Remove from uploading set
       }
     },
     [uploadImage, token]
@@ -140,10 +144,10 @@ export default function ImageUpload() {
   useEffect(() => {
     images.forEach((image) => {
       if (image.status === 'uploading') {
-        handleImageUpload(image)
+        handleImageUpload(image);
       }
-    })
-  }, [images, handleImageUpload])
+    });
+  }, [images, handleImageUpload]);
 
   const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
     rejectedFiles.forEach((file) => {
@@ -158,65 +162,62 @@ export default function ImageUpload() {
       file,
       preview: URL.createObjectURL(file),
       id: Math.random().toString(36).substring(7),
-      uploadProgress: 20,
+      uploadProgress: 30,
       status: 'uploading',
-    }))
+    }));
 
-    setImages((prevImages) => [...prevImages, ...newImages].slice(0, 10))
-  }, [])
+    setImages((prevImages) => [...prevImages, ...newImages].slice(0, 10));
+  }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: { 'image/*': [] },
     maxSize: 5 * 1024 * 1024,
-  })
+  });
 
   const removeImage = async (id) => {
     try {
-      const { photoId } = images.find((img) => img.id === id)
-      setIsLoading(true)
-      await deletePhoto(token, photoId)
-      setImages((prevImages) => prevImages.filter((image) => image.id !== id))
+      const { photoId } = images.find((img) => img.id === id);
+      setIsLoading(true);
+      await deletePhoto(token, photoId);
+      setImages((prevImages) => prevImages.filter((image) => image.id !== id));
       toast.success('Imagen eliminada con exito!');
     } catch (error) {
       const errorMessage = error.response?.data?.details || error.response?.data?.error || error.message || error;
       toast.error(`Error al borrar la imagen: ${errorMessage}`);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const retryUpload = (image) => {
     setImages((prevImages) =>
-      prevImages.map((img) =>
-        img.id === image.id ? { ...img, status: 'uploading', uploadProgress: 0 } : img
-      )
-    )
-  }
+      prevImages.map((img) => (img.id === image.id ? { ...img, status: 'uploading', uploadProgress: 0 } : img))
+    );
+  };
 
   const handleSubmit = async () => {
     if (images.length < 6) {
-      toast.error('Por favor, sube al menos 6 imágenes.')
-      return
+      toast.error('Por favor, sube al menos 6 imágenes.');
+      return;
     }
-    setShowConfirmModal(true)
-  }
+    setShowConfirmModal(true);
+  };
 
   const confirmSubmit = async () => {
     try {
-      setIsLoading(true)
-      setShowConfirmModal(false)
-      await completeUpload(token, finalTopic)
-      setShowSuccessModal(true)
+      setIsLoading(true);
+      setShowConfirmModal(false);
+      await completeUpload(token, finalTopic);
+      setShowSuccessModal(true);
     } catch (e) {
-      console.error('Error al completar el proceso de subida:', e)
-      const errorMessage = e.response?.data?.details || e.response?.data?.message || e.response?.data?.error || e.message || e
-      toast.error(errorMessage)
+      console.error('Error al completar el proceso de subida:', e);
+      const errorMessage = e.response?.data?.details || e.response?.data?.message || e.response?.data?.error || e.message || e;
+      toast.error(errorMessage);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-
-  }
+  };
 
   if (orderStatus === 'completed') {
     return (
@@ -235,7 +236,6 @@ export default function ImageUpload() {
       </div>
     );
   }
-  
 
   if (imagicaError) {
     return (
@@ -247,7 +247,7 @@ export default function ImageUpload() {
           </div>
         </main>
       </div>
-    )
+    );
   }
 
   return (
