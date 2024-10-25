@@ -1,7 +1,6 @@
-
 import React, { useState, useCallback, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { X, Upload, Camera, AlertCircle, CheckCircle } from 'lucide-react'
+import { X, Upload, Camera, AlertCircle, CheckCircle, Plus } from 'lucide-react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import Lottie from 'lottie-react'
 import loadingAnimation from './assets/animations/Animation - loading.json'
@@ -25,21 +24,23 @@ import idea10 from './assets/idea10.jpg';
 
 const themes = [
   { id: 1, name: 'Magnate', image: ejemplo1 },
-  { id: 10, name: 'Fiester@', image: idea10 },
+  { id: 2, name: 'Fiester@', image: idea10 },
   { id: 3, name: 'Jinete', image: ejemplo3 },
-  { id: 2, name: 'Princesa', image: ejemplo2 },
-  { id: 9, name: 'Siren@', image: idea9 },
-  { id: 5, name: 'Dios Griego', image: ejemplo5 },
-  { id: 6, name: 'Telettubbie', image: ejemplo6 },
+  { id: 4, name: 'Princesa', image: ejemplo2 },
+  { id: 5, name: 'Siren@', image: idea9 },
+  { id: 6, name: 'Dios Griego', image: ejemplo5 },
+  { id: 7, name: 'Telettubbie', image: ejemplo6 },
   { id: 8, name: 'Terminator', image: idea8 },
-  { id: 7, name: 'Soldado Romano', image: ejemplo7 },
+  { id: 9, name: 'Soldado Romano', image: ejemplo7 },
+  { id: 10, name: 'Superhéroe', image: ejemplo4 },
 ];
 
 export default function ImageUpload() {
   const [images, setImages] = useState([]);
   const [orderStatus, setOrderStatus] = useState('loading');
-  const [selectedTheme, setSelectedTheme] = useState('');
-  const [customTheme, setCustomTheme] = useState('');
+  const [selectedThemes, setSelectedThemes] = useState([]);
+  const [customThemes, setCustomThemes] = useState([]);
+  const [customThemeInput, setCustomThemeInput] = useState('');
   const [imagicaData, setImagicaData] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [imagicaError, setImagicaError] = useState();
@@ -53,8 +54,8 @@ export default function ImageUpload() {
 
   const { validateToken, uploadImage, getUploadedPhotos, deletePhoto, completeUpload } = useImagica();
 
-  const isButtonDisabled = images.length < 6 || orderStatus !== 'pending' || (!selectedTheme && !customTheme);
-  const finalTopic = selectedTheme || customTheme;
+  const isButtonDisabled = images.length < 6 || orderStatus !== 'pending' || (selectedThemes.length + customThemes.length) !== 10;
+  const finalThemes = [...selectedThemes, ...customThemes].join(', ');
 
   async function fetchPhotosByToken(token) {
     try {
@@ -201,6 +202,10 @@ export default function ImageUpload() {
       toast.error('Por favor, sube al menos 6 imágenes.');
       return;
     }
+    if (selectedThemes.length + customThemes.length !== 10) {
+      toast.error('Por favor, selecciona exactamente 10 temáticas en total.');
+      return;
+    }
     setShowConfirmModal(true);
   };
 
@@ -208,7 +213,7 @@ export default function ImageUpload() {
     try {
       setIsLoading(true);
       setShowConfirmModal(false);
-      await completeUpload(token, finalTopic);
+      await completeUpload(token, finalThemes);
       setShowSuccessModal(true);
     } catch (e) {
       console.error('Error al completar el proceso de subida:', e);
@@ -217,6 +222,28 @@ export default function ImageUpload() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const toggleTheme = (themeName) => {
+    setSelectedThemes(prev => {
+      if (prev.includes(themeName)) {
+        return prev.filter(t => t !== themeName);
+      } else if (prev.length + customThemes.length < 10) {
+        return [...prev, themeName];
+      }
+      return prev;
+    });
+  };
+
+  const addCustomTheme = () => {
+    if (customThemeInput.trim() && selectedThemes.length + customThemes.length < 10) {
+      setCustomThemes(prev => [...prev, customThemeInput.trim()]);
+      setCustomThemeInput('');
+    }
+  };
+
+  const removeCustomTheme = (theme) => {
+    setCustomThemes(prev => prev.filter(t => t !== theme));
   };
 
   if (orderStatus === 'completed') {
@@ -273,17 +300,19 @@ export default function ImageUpload() {
         </header>
         <main className="flex-1 container mx-auto px-4 py-8">
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h1 className="text-3xl font-bold text-purple-800 mb-4">
-              ¡Bienvenid@, {imagicaData?.upload_info?.user?.name}!
-            </h1>
-            <p className="text-lg text-purple-600 mb-6">
-              Este es tu enlace personal para subir imágenes. Por favor, no compartas este enlace
-              con nadie más.
-            </p>
-            <p className="text-md text-purple-700 mb-8">
-              Sube tus imágenes para entrenar el modelo y generar tus nuevas y divertidas fotos.
-              Necesitamos un mínimo de 6 imágenes y un máximo de 10.
-            </p>
+          <h1 className="text-3xl font-bold text-purple-800 mb-4">
+            ¡Bienvenid@, {imagicaData?.upload_info?.user?.name}!
+          </h1>
+          <p className="text-lg text-purple-600 mb-6">
+            Este es tu enlace personal para subir imágenes. Por favor, no compartas este enlace
+            con nadie más.
+          </p>
+          <p className="text-md text-purple-700 mb-8">
+            Sube tus imágenes para entrenar el modelo y generar tus nuevas y divertidas fotos.
+            Necesitamos un mínimo de 6 imágenes y un máximo de 10. 
+            Es importante que las imágenes sean de buena calidad y que muestren tu cara desde distintos ángulos, 
+            preferiblemente sin accesorios.
+          </p>
 
             <div
               {...getRootProps()}
@@ -291,6 +320,7 @@ export default function ImageUpload() {
                 isDragActive ? 'border-purple-600 bg-purple-100' : 'border-purple-300 bg-purple-50'
               }`}
             >
+              
               <input {...getInputProps()} />
               <Upload className="h-10 w-10 text-purple-500 mb-4" />
               <p className="text-purple-600 text-lg">
@@ -348,57 +378,94 @@ export default function ImageUpload() {
               ))}
             </div>
 
-            <div  className="mt-10">
-              <h2 className="text-2xl font-bold text-purple-800 mb-4">Eliga una tematica para generar sus nuevas fotos.</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="mt-10">
+              <h2 className="text-2xl font-bold text-purple-800 mb-4">Selecciona 10 temáticas para generar tus nuevas fotos.</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 {themes.map((theme) => (
                   <motion.button
                     key={theme.id}
                     layoutId={`theme-${theme.id}`}
-                    onClick={() => setSelectedTheme(theme.name)}
+                    onClick={() => toggleTheme(theme.name)}
                     className={`p-4 bg-white border-2 ${
-                      selectedTheme === theme.name
-                        ? 'border-purple-600 ring-4 ring-purple-200 transform scale-120'
+                      selectedThemes.includes(theme.name)
+                        ? 'border-purple-600 ring-4 ring-purple-200'
                         : 'border-transparent'
-                    } rounded-lg shadow-md text-purple-600 text-center transition-all hover:shadow-lg transform hover:scale-105`}
-                    whileHover={{ scale: 1.01 }}
-                    animate={{ scale: selectedTheme === theme.name ? 1.05 : 1 }}
+                    } rounded-lg shadow-md text-purple-600 text-center transition-all hover:shadow-lg relative`}
+                    whileHover={{ scale: 1.05 }}
+                    animate={{ scale: selectedThemes.includes(theme.name) ? 1.05 : 1 }}
                   >
                     <img
                       src={theme.image}
                       alt={theme.name}
-                      className="w-full h-60 object-cover rounded-lg mb-2"
+                      className="w-full h-40 object-cover rounded-lg mb-2"
                     />
                     <span className="font-semibold">{theme.name}</span>
+                    {selectedThemes.includes(theme.name) && (
+                      <div className="absolute top-2 right-2 bg-purple-600 text-white rounded-full p-1">
+                        <CheckCircle className="h-4 w-4" />
+                      </div>
+                    )}
                   </motion.button>
                 ))}
               </div>
 
               <div className="mt-4">
-                <input
-                  type="text"
-                  value={customTheme}
-                  onChange={(e) => setCustomTheme(e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg shadow-md border-2 border-purple-300 focus:outline-none focus:border-purple-500 transition-colors"
-                  placeholder="Escriba su propia tematica personalizada."
-                />
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {customThemes.map((theme, index) => (
+                    <div key={index} className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full flex items-center">
+                      <span>{theme}</span>
+                      <button
+                        onClick={() => removeCustomTheme(theme)}
+                        className="ml-2 text-purple-600 hover:text-purple-800"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="text"
+                    value={customThemeInput}
+                    onChange={(e) => setCustomThemeInput(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addCustomTheme();
+                      }
+                    }}
+                    className="flex-grow px-4 py-2 rounded-l-lg shadow-md border-2 border-purple-300 focus:outline-none focus:border-purple-500 transition-colors"
+                    placeholder="Escribe tu propia temática personalizada"
+                  />
+                  <button
+                    onClick={addCustomTheme}
+                    disabled={selectedThemes.length + customThemes.length >= 10}
+                    className="bg-purple-600 text-white px-4 py-2 rounded-r-lg hover:bg-purple-700 transition-colors disabled:bg-purple-300"
+                  >
+                    <Plus className="h-7 w-5" />
+                  </button>
+                </div>
+                <p className="mt-2 text-purple-600 font-semibold">
+                  {selectedThemes.length + customThemes.length}/10 temáticas seleccionadas
+                </p>
               </div>
             </div>
 
             <div className="mt-6 relative group">
-              <button
-                onClick={handleSubmit}
-                disabled={isButtonDisabled}
-                className={`w-full py-3 px-4 bg-purple-600 text-white font-semibold rounded-lg shadow-md 
-                  ${isButtonDisabled ? 'bg-purple-400 cursor-not-allowed' : 'hover:bg-purple-700'}
-                  transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50`}
-              >
-                {orderStatus !== 'pending' ? orderStatus : 'Enviar imágenes'}
-              </button>
+            <button
+              onClick={handleSubmit}
+              disabled={isButtonDisabled}
+              className={`w-full py-3 px-4 text-white font-semibold rounded-lg shadow-md 
+                ${isButtonDisabled ? 'bg-purple-400 cursor-not-allowed opacity-50' : 'bg-purple-600 hover:bg-purple-700'}
+                transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50`}
+            >
+              {orderStatus !== 'pending' ? orderStatus : 'Enviar imágenes'}
+            </button>
+
 
               {isButtonDisabled && (
                 <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-full mb-2 p-2 bg-gray-800 text-white text-sm rounded-md opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100">
-                  Suba al menos 6 imágenes y selecciona una temática.
+                  Sube al menos 6 imágenes y selecciona 10 temáticas en total.
                 </div>
               )}
             </div>
@@ -410,7 +477,15 @@ export default function ImageUpload() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
             <h3 className="text-lg font-semibold mb-4">Confirmar envío de imágenes</h3>
-            <p className="mb-4">Estás a punto de enviar <span className="font-semibold">{images.length}</span> imágenes con la temática: <span className="font-semibold">{finalTopic}</span></p>
+            <p className="mb-4">Estás a punto de enviar <span className="font-semibold">{images.length}</span> imágenes con las siguientes temáticas:</p>
+            <ul className="mb-6 list-disc list-inside">
+              {selectedThemes.map((theme, index) => (
+                <li key={index}>{theme}</li>
+              ))}
+              {customThemes.map((theme, index) => (
+                <li key={`custom-${index}`}>{theme}</li>
+              ))}
+            </ul>
             <p className="mb-6">¿Estás seguro de que deseas continuar?</p>
             <div className="flex justify-end space-x-4">
               <button
@@ -440,9 +515,6 @@ export default function ImageUpload() {
             <p className="mb-6">Tus nuevas fotos serán enviadas a tu correo electrónico pronto ({ imagicaData.upload_info.user.email }).</p>
             <button
               onClick={() => {
-                // setShowSuccessModal(false)
-                // setImages([])
-                // reload page
                 window.location.reload()
               }}
               className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
