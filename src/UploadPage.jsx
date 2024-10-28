@@ -397,7 +397,7 @@ export default function ImageUpload() {
                     <img
                       src={theme.image}
                       alt={theme.name}
-                      className="w-full h-40 object-cover rounded-lg mb-2"
+                      className="w-full h-60 object-cover rounded-lg mb-2"
                     />
                     <span className="font-semibold">{theme.name}</span>
                     {selectedThemes.includes(theme.name) && (
