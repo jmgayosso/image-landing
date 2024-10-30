@@ -256,7 +256,7 @@ export default function ImageUpload() {
               Hemos recibido tus fotos y el equipo de Imagica está trabajando en ellas. Pronto las recibirás en tu correo electrónico.
             </p>
             <p className="text-lg text-purple-500">
-              Si necesitas ayuda o tienes alguna pregunta, no dudes en contactarnos en <a href="mailto:soporte@imagica.com" className="underline">soporte@imagica.com</a>.
+              Si necesitas ayuda o tienes alguna pregunta, no dudes en contactarnos en <a href="mailto:hello@mightychat.ai" className="underline">hello@mightychat.ai</a>.
             </p>
           </div>
         </main>
